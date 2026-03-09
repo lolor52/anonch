@@ -62,7 +62,7 @@ async function initResultPage() {
     }))
     .filter((item) => item.type);
 
-  document.title = `${storedResult.typeCode} — результат — anonch`;
+  document.title = `${storedResult.typeCode} — личный результат MBTI — АнонЧ`;
 
   pageHost.innerHTML = `
     <section class="section hero">
@@ -254,7 +254,7 @@ async function initResultPage() {
 }
 
 function renderEmptyResultState(currentUser) {
-  document.title = "Результат MBTI — anonch";
+  document.title = "Личный результат MBTI — АнонЧ";
 
   pageHost.innerHTML = `
     <section class="section">

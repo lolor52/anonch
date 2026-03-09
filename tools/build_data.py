@@ -419,12 +419,18 @@ def build_type_pages() -> None:
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title} — anonch</title>
+    <title>{code} — {title} | MBTI — АнонЧ</title>
+    <meta name="description" content="{description}" />
+    <meta name="robots" content="index,follow" />
+    <link rel="icon" href="/media/logo.png" type="image/png" sizes="283x283" />
+    <link rel="apple-touch-icon" href="/media/logo.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="stylesheet" href="/src/styles/tokens.css" />
     <link rel="stylesheet" href="/src/styles/base.css" />
     <link rel="stylesheet" href="/src/styles/layout.css" />
     <link rel="stylesheet" href="/src/styles/components.css" />
     <link rel="stylesheet" href="/src/styles/pages/type-detail.css" />
+    <script type="module" src="/src/shared/seo.js"></script>
     <script type="module" src="/src/shared/shell.js"></script>
     <script type="module" src="/src/pages/type-detail.js"></script>
   </head>
@@ -442,7 +448,15 @@ def build_type_pages() -> None:
     for code in ORDER:
         target = ROOT / "types" / code.lower() / "index.html"
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(template.format(code=code, title=parse_types()[code]["fullName"]), encoding="utf-8")
+        type_details = parse_types()[code]
+        target.write_text(
+            template.format(
+                code=code,
+                title=type_details["fullName"],
+                description=f'{code} — {type_details["fullName"]}: {type_details["shortDescription"]} Описание типа MBTI и совместимости.',
+            ),
+            encoding="utf-8",
+        )
 
     (ROOT / "types" / "template" / "index.html").write_text(
         """<!doctype html>
@@ -450,12 +464,18 @@ def build_type_pages() -> None:
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Шаблон страницы типа — anonch</title>
+    <title>Шаблон типа MBTI — АнонЧ</title>
+    <meta name="description" content="Служебный шаблон страницы типа MBTI в АнонЧ." />
+    <meta name="robots" content="noindex,nofollow" />
+    <link rel="icon" href="/media/logo.png" type="image/png" sizes="283x283" />
+    <link rel="apple-touch-icon" href="/media/logo.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="stylesheet" href="/src/styles/tokens.css" />
     <link rel="stylesheet" href="/src/styles/base.css" />
     <link rel="stylesheet" href="/src/styles/layout.css" />
     <link rel="stylesheet" href="/src/styles/components.css" />
     <link rel="stylesheet" href="/src/styles/pages/type-detail.css" />
+    <script type="module" src="/src/shared/seo.js"></script>
     <script type="module" src="/src/shared/shell.js"></script>
     <script type="module" src="/src/pages/type-detail.js"></script>
   </head>

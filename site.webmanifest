@@ -1,0 +1,19 @@
+{
+  "name": "АнонЧ — тест MBTI, 16 типов и совместимость",
+  "short_name": "АнонЧ",
+  "description": "Спокойный сайт про MBTI: тест, 16 типов, 4 группы и совместимость.",
+  "lang": "ru-RU",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f9f4ed",
+  "theme_color": "#173a3c",
+  "icons": [
+    {
+      "src": "/media/logo.png",
+      "sizes": "283x283",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

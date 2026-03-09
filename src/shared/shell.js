@@ -2,9 +2,24 @@ import { createAuthManager } from "../features/auth/auth-manager.js";
 import { isProtectedRoute, redirectToAuth } from "../features/auth/page-guard.js";
 
 const authManager = createAuthManager();
+const BRAND_NAME = "АнонЧ";
 const pageKey = document.body.dataset.page ?? "";
 
 let currentUser = readCurrentUser();
+
+function renderBrand() {
+  return `
+    <a class="nav-brand" href="/" aria-label="${BRAND_NAME}">
+      <span class="nav-brand-mark" aria-hidden="true">
+        <img src="/media/logo.png" alt="" width="44" height="44" />
+      </span>
+      <span class="nav-brand-copy">
+        <strong>${BRAND_NAME}</strong>
+        <span>тест, типы и совместимость</span>
+      </span>
+    </a>
+  `;
+}
 
 function getNavItems() {
   return [
@@ -55,13 +70,7 @@ function renderHeader() {
   host.innerHTML = `
     <header class="site-header">
       <div class="container-wide nav-inner">
-        <a class="nav-brand" href="/" aria-label="anonch">
-          <span class="nav-brand-mark" aria-hidden="true">A</span>
-          <span class="nav-brand-copy">
-            <strong>anonch</strong>
-            <span>MBTI profile &amp; compatibility</span>
-          </span>
-        </a>
+        ${renderBrand()}
 
         <button
           class="menu-toggle"
@@ -106,16 +115,10 @@ function renderFooter() {
     <footer class="site-footer">
       <div class="container-wide footer-grid">
         <div class="footer-column">
-          <a class="nav-brand" href="/" aria-label="anonch">
-            <span class="nav-brand-mark" aria-hidden="true">A</span>
-            <span class="nav-brand-copy">
-              <strong>anonch</strong>
-              <span>Локальный сервис по MBTI без backend</span>
-            </span>
-          </a>
+          ${renderBrand()}
           <p class="muted">
-            Чистый frontend-каркас для теста, личного результата, каталога типов,
-            совместимости и будущего анонимного чата.
+            Спокойный сайт про MBTI: вход, тест, личный результат, каталог типов,
+            совместимость и будущий анонимный чат.
           </p>
         </div>
 
@@ -133,16 +136,16 @@ function renderFooter() {
         <div class="footer-column">
           <p class="footer-title">Статус</p>
           <div class="footer-links">
-            <span>VK ID и Yandex ID работают через mock или real-конфигурацию без хранения внешних токенов</span>
-            <span>Профиль, сессия, черновик теста и результат живут локально в браузере</span>
+            <span>Можно войти по имени, а также через VK ID или Yandex ID</span>
+            <span>Профиль, ответы теста и результат сохраняются в браузере</span>
             <a href="/chat/">Скоро: анонимный чат по MBTI</a>
           </div>
         </div>
       </div>
 
       <div class="container-wide footer-bottom">
-        <span>© <span data-current-year></span> anonch</span>
-        <span>Frontend-only сервис по MBTI без backend</span>
+        <span>© <span data-current-year></span> ${BRAND_NAME}</span>
+        <span>Сайт по MBTI: тест, типы и совместимость</span>
       </div>
     </footer>
   `;
@@ -215,7 +218,7 @@ function setupYear() {
 }
 
 function renderUserActions(mode) {
-  const providerLabel = currentUser.authProvider === "local" ? "local" : currentUser.authProvider;
+  const providerLabel = getAuthProviderLabel(currentUser.authProvider);
   const logoutClass = mode === "mobile" ? "btn btn--secondary btn--sm nav-logout" : "btn btn--ghost btn--sm";
 
   return `
@@ -235,6 +238,18 @@ function renderGuestActions() {
     <span class="badge badge--soft">гость</span>
     <a class="btn btn--secondary btn--sm" href="/auth/">Войти</a>
   `;
+}
+
+function getAuthProviderLabel(providerKey) {
+  if (providerKey === "vk") {
+    return "VK ID";
+  }
+
+  if (providerKey === "yandex") {
+    return "Yandex ID";
+  }
+
+  return "свой профиль";
 }
 
 function readCurrentUser() {

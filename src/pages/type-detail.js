@@ -62,7 +62,7 @@ async function initTypeDetailPage() {
     .sort((left, right) => right.score - left.score || left.type.code.localeCompare(right.type.code));
   const currentUserType = currentUser?.mbtiResult?.code ?? null;
 
-  document.title = `${currentType.code} — ${currentType.fullName} — anonch`;
+  document.title = `${currentType.code} — ${currentType.fullName} | MBTI — АнонЧ`;
 
   pageHost.innerHTML = `
     <section class="section hero">
@@ -205,7 +205,7 @@ async function initTypeDetailPage() {
 }
 
 function renderTemplateState() {
-  document.title = "Шаблон страницы типа — anonch";
+  document.title = "Шаблон типа MBTI — АнонЧ";
   pageHost.innerHTML = `
     <section class="section hero">
       <div class="container-wide hero-grid type-hero">

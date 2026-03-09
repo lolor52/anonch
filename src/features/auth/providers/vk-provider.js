@@ -19,7 +19,7 @@ export function createVkAuthAdapter(config = getProviderConfig("vk")) {
       return getProviderStatus(config, {
         label: "VK ID",
         requiredFields: ["appId", "redirectUri"],
-        readyDescription: "VK ID готов к popup-авторизации через callback-страницу.",
+        readyDescription: "Можно войти через отдельное окно.",
       });
     },
 
@@ -50,7 +50,7 @@ export function createVkAuthAdapter(config = getProviderConfig("vk")) {
         const accessToken = extractAccessToken(authPayload);
 
         if (!accessToken) {
-          throw new Error("VK ID не вернул access_token. Проверьте настройки приложения и redirect URL.");
+          throw new Error("Вход через VK ID не завершился. Попробуйте ещё раз.");
         }
 
         const profile = await fetchVkProfile(accessToken, config);
@@ -72,14 +72,13 @@ async function fetchVkProfile(accessToken, config) {
   const data = await response.json();
 
   if (!response.ok || data.error) {
-    const message = data.error?.error_msg || "Не удалось запросить профиль VK ID.";
-    throw new Error(message);
+    throw new Error("Не удалось получить данные профиля VK ID.");
   }
 
   const profile = data.response?.[0];
 
   if (!profile?.id) {
-    throw new Error("VK ID вернул неполный профиль пользователя.");
+    throw new Error("VK ID не передал данные профиля. Попробуйте ещё раз.");
   }
 
   return profile;

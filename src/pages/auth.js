@@ -21,7 +21,7 @@ function initAuthPage() {
     state.currentUser = authManager.restoreSession();
   } catch (error) {
     console.error("[auth] Не удалось восстановить сессию на странице входа.", error);
-    state.message = "Не удалось прочитать локальные данные профиля. Проверьте localStorage и попробуйте снова.";
+    state.message = "Не удалось прочитать сохранённый профиль. Попробуйте снова.";
     state.messageKind = "error";
   }
 
@@ -53,27 +53,27 @@ function render() {
     <section class="section hero">
       <div class="container-wide hero-grid auth-hero">
         <div class="stack-lg">
-          <span class="eyebrow">Локальная авторизация</span>
+          <span class="eyebrow">Вход в профиль</span>
           <div class="stack">
-            <h1>Войти, сохранить сессию и продолжить тест без backend.</h1>
+            <h1>Войти, продолжить тест и не потерять свой результат.</h1>
             <p class="lead">
-              Профиль живёт в браузере. Для внешних провайдеров уже есть единый слой и безопасный mock-режим,
-              а в localStorage сохраняются только локальный профиль и состояние авторизации.
+              Сайт запоминает ваш профиль, прогресс теста и итоговый результат прямо в браузере.
+              Можно вернуться позже и продолжить с того места, где остановились.
             </p>
           </div>
           <div class="cluster">
-            <span class="badge">localStorage session</span>
-            <span class="badge badge--warm">VK ID ${findProviderMode(providerStatuses, "vk")}</span>
-            <span class="badge badge--soft">Yandex ID ${findProviderMode(providerStatuses, "yandex")}</span>
+            <span class="badge">свой профиль</span>
+            <span class="badge badge--warm">VK ID</span>
+            <span class="badge badge--soft">Yandex ID</span>
           </div>
         </div>
 
         <article class="card card--contrast auth-hero-note">
-          <span class="badge badge--warm">Что сохраняется</span>
-          <h2 class="card-title">Только локальный профиль и флаг входа.</h2>
+          <span class="badge badge--warm">Что запоминается</span>
+          <h2 class="card-title">Имя, выбранный способ входа и ваш прогресс.</h2>
           <p>
-            Внешние токены не хранятся. После успешного входа любой сценарий приводится к одному профилю:
-            логин, имя, провайдер, аватар и будущий результат MBTI.
+            Этого достаточно, чтобы позже открыть сайт и сразу вернуться к тесту, результату
+            и своему профилю.
           </p>
         </article>
       </div>
@@ -102,10 +102,10 @@ function renderGuestView(providerStatuses) {
   return `
     <div class="stack">
       <span class="badge">Варианты входа</span>
-      <h2 class="card-title">Сначала локальный профиль, затем тест и результат.</h2>
+      <h2 class="card-title">Выберите удобный способ входа.</h2>
       <p class="muted">
-        Локальная регистрация и вход уже работают. Внешние провайдеры идут через единый auth-layer и сейчас
-        доступны в mock-режиме, пока реальные ключи не заполнены.
+        Можно создать свой профиль и входить по логину. Если доступен быстрый вход через VK ID
+        или Yandex ID, сайт сам использует его и вернёт вас к тесту.
       </p>
     </div>
 
@@ -201,7 +201,7 @@ function renderGuestView(providerStatuses) {
     </form>
     </div>
 
-    <div class="auth-divider">или через внешний провайдер</div>
+    <div class="auth-divider">или выберите другой способ входа</div>
 
     <div class="auth-provider-list">
       ${providerStatuses
@@ -212,7 +212,7 @@ function renderGuestView(providerStatuses) {
               class="btn btn--social"
               type="button"
               data-provider-signin="${provider.key}"
-              ${provider.mode === "disabled" ? "disabled" : ""}
+              ${!provider.ready ? "disabled" : ""}
             >
               <strong>${provider.key === "vk" ? "VK" : "Я"}</strong>
               <span>
@@ -226,7 +226,7 @@ function renderGuestView(providerStatuses) {
 
     <div class="notice">
       После успешного входа вы попадёте на ${
-        state.redirectTarget === "/test/" ? "тест" : "нужную защищённую страницу"
+        state.redirectTarget === "/test/" ? "тест" : "нужный раздел"
       }.
     </div>
   `;
@@ -236,10 +236,10 @@ function renderCurrentUser(user) {
   return `
     <div class="stack">
       <span class="badge">Профиль активен</span>
-      <h2 class="card-title">Сессия восстановлена и готова к работе.</h2>
+      <h2 class="card-title">Вход уже действует и всё готово.</h2>
       <p class="muted">
-        Можно продолжить тест, открыть результат или выйти из локальной сессии. При перезагрузке профиль
-        восстановится автоматически, пока вы не нажмёте «Выйти».
+        Можно продолжить тест, открыть результат или выйти из профиля. После перезагрузки вход
+        сохранится, пока вы не нажмёте «Выйти».
       </p>
     </div>
 
@@ -249,7 +249,7 @@ function renderCurrentUser(user) {
         <div class="stack">
           <h3 class="card-title">${user.displayName}</h3>
           <p class="muted">@${user.username}</p>
-          <p class="muted">Провайдер: ${getProviderLabel(user.authProvider)}</p>
+          <p class="muted">Способ входа: ${getProviderLabel(user.authProvider)}</p>
           <p class="muted">Создан: ${formatDate(user.createdAt)}</p>
           <p class="muted">Обновлён: ${formatDate(user.updatedAt)}</p>
         </div>
@@ -260,7 +260,7 @@ function renderCurrentUser(user) {
         <div class="stack">
           <h3 class="card-title">Продолжить после входа</h3>
           <p class="muted">
-            Этот профиль уже доступен для защищённых разделов. Можно сразу открыть тест, результат или каталог типов.
+            Профиль уже готов. Можно сразу открыть тест, результат или каталог типов.
           </p>
         </div>
       </article>
@@ -277,34 +277,34 @@ function renderCurrentUser(user) {
 function renderSide(providerStatuses) {
   return `
     <article class="card">
-      <span class="badge badge--soft">Как это работает</span>
+      <span class="badge badge--soft">Как это устроено</span>
       <div class="timeline">
         <div class="timeline-step">
           <strong>1</strong>
           <div class="stack">
             <h3>Профиль</h3>
-            <p class="muted">Создаётся единый локальный профиль с именем, логином и провайдером входа.</p>
+            <p class="muted">Создаётся ваш профиль с именем и выбранным способом входа.</p>
           </div>
         </div>
         <div class="timeline-step">
           <strong>2</strong>
           <div class="stack">
-            <h3>Сессия</h3>
-            <p class="muted">В localStorage хранится только флаг входа и id текущего пользователя.</p>
+            <h3>Возврат</h3>
+            <p class="muted">Сайт запоминает, что вы вошли, и возвращает к вашему профилю при следующем открытии.</p>
           </div>
         </div>
         <div class="timeline-step">
           <strong>3</strong>
           <div class="stack">
-            <h3>Guard</h3>
-            <p class="muted">Тест и результат без входа недоступны и сразу ведут обратно на эту страницу.</p>
+            <h3>Доступ</h3>
+            <p class="muted">Если открыть тест или результат без входа, сайт сначала попросит выбрать профиль.</p>
           </div>
         </div>
       </div>
     </article>
 
     <article class="card">
-      <span class="badge">Провайдеры</span>
+      <span class="badge">Способы входа</span>
       <div class="provider-status-list">
         ${providerStatuses
           .map(
@@ -314,7 +314,7 @@ function renderSide(providerStatuses) {
                   <strong>${provider.label}</strong>
                   <span class="muted">${provider.description}</span>
                 </div>
-                <span class="badge ${provider.ready ? "badge--soft" : "badge--warm"}">${provider.mode}</span>
+                <span class="badge ${provider.ready ? "badge--soft" : "badge--warm"}">${getProviderStatusLabel(provider)}</span>
               </div>
             `
           )
@@ -325,11 +325,11 @@ function renderSide(providerStatuses) {
     <div class="auth-summary-grid">
       <article class="card">
         <strong class="stat-value">2</strong>
-        <span class="stat-label">защищённые страницы уже закрыты без входа</span>
+        <span class="stat-label">раздела открываются после входа</span>
       </article>
       <article class="card">
-        <strong class="stat-value">0</strong>
-        <span class="stat-label">долговременных внешних токенов хранится в браузере</span>
+        <strong class="stat-value">1</strong>
+        <span class="stat-label">профиль хранит ваш прогресс и результат</span>
       </article>
     </div>
   `;
@@ -444,11 +444,19 @@ function getProviderLabel(providerKey) {
     return "Yandex ID";
   }
 
-  return "Локально";
+  return "свой профиль";
 }
 
-function findProviderMode(providerStatuses, providerKey) {
-  return providerStatuses.find((provider) => provider.key === providerKey)?.mode ?? "unknown";
+function getProviderStatusLabel(provider) {
+  if (provider.key === "local") {
+    return "Доступно";
+  }
+
+  if (provider.mode === "mock") {
+    return "Быстрый вход";
+  }
+
+  return provider.ready ? "Доступно" : "Скоро";
 }
 
 function formatDate(value) {

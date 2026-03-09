@@ -1,43 +1,41 @@
-# anonch
+# АнонЧ
 
-Frontend-only сервис по MBTI без backend и без UI-фреймворков. Пользователь может войти локально или через `VK ID` / `Yandex ID`, пройти тест из 22 вопросов, сохранить результат в браузере, открыть каталог 16 типов, страницы конкретных типов, классификацию по 4 группам и заглушку будущего анонимного чата.
+Frontend-only сервис по MBTI без backend, без `Node.js`, без npm-пакетов и без сторонних JS-библиотек. Проект использует только `HTML`, `CSS`, чистый `JavaScript` и `JSON`.
 
 Подробные правила проекта зафиксированы в [guide/project-rules.md](guide/project-rules.md).
 
 ## Что реализовано
 
-- multi-page приложение на `HTML`, `CSS`, `vanilla JavaScript`, `JSON`
+- multi-page приложение на `HTML`, `CSS`, чистом `JavaScript` и `JSON`
 - local auth: регистрация, вход, выход, восстановление сессии
-- внешний вход через `VK ID` и `Yandex ID` с `mock` и `real` режимами
+- внешний вход через `VK ID` и `Yandex ID` с `mock` и `real` режимами без внешних JS SDK
 - безопасная локальная сессия без долговременного хранения внешних токенов
 - MBTI test engine с 22 вопросами, черновиком и сохранением результата
 - страница результата с осями, группой, описанием и совместимостью
 - каталог всех 16 типов с поиском и фильтром по группам
 - отдельные страницы типов, собранные из JSON
 - страница классификации и страница будущего чата
-- unit, e2e и visual проверки
+- статические и структурные проверки на `Python`
 
 ## Локальный запуск
 
-1. Установить зависимости:
+1. Перейти в папку проекта:
 
 ```bash
-npm install
+cd /mnt/c/Users/lol20/Documents/GitHub/anonch
 ```
 
-2. Установить браузер для e2e и visual:
+2. Запустить локальный сервер стандартными средствами `Python`:
 
 ```bash
-npx playwright install chromium
+python3 -m http.server 4173 --bind 127.0.0.1
 ```
 
-3. Запустить проект:
+3. Открыть в браузере:
 
-```bash
-npm run dev
+```text
+http://127.0.0.1:4173
 ```
-
-Приложение будет доступно на `http://127.0.0.1:4173`.
 
 ## Конфиг внешней авторизации
 
@@ -51,12 +49,11 @@ npm run dev
 Для `Yandex ID`:
 - `clientId`
 - `redirectUri`
-- `tokenPageOrigin`
 - при необходимости `origins.allowedAppOrigins`
 
 Рекомендуемые redirect URI для локальной проверки:
-- `VK ID`: `http://127.0.0.1:4173/auth/callback/`
-- `Yandex ID`: `http://127.0.0.1:4173/auth/yandex/token/`
+- `VK ID`: `http://127.0.0.1:4173/auth/callback/?provider=vk`
+- `Yandex ID`: `http://127.0.0.1:4173/auth/callback/?provider=yandex`
 
 Режимы провайдеров:
 - `mock` — безопасный локальный сценарий без внешних ключей
@@ -70,46 +67,25 @@ npm run dev
 По умолчанию `VK ID` и `Yandex ID` работают в `mock` режиме. Для локальной проверки достаточно:
 
 1. оставить `mode: "mock"` у нужного провайдера в [src/config/auth-providers.js](src/config/auth-providers.js)
-2. запустить `npm run dev`
+2. запустить `python3 -m http.server 4173 --bind 127.0.0.1`
 3. открыть `/auth/`
 4. нажать кнопку `VK ID` или `Yandex ID`
 
-После входа создаётся обычная локальная сессия, как и после local auth.
+## Проверки
 
-## Тесты и проверки
-
-Базовые проверки:
+Запуск:
 
 ```bash
-npm run test
+python3 tests/unit/check_data_layer.py
+python3 tests/unit/check_static_ui.py
+python3 tests/unit/check_project_stack.py
 ```
 
-E2E:
-
-```bash
-npm run e2e
-```
-
-Visual check:
-
-```bash
-npm run visual
-```
-
-Полный прогон:
-
-```bash
-npm run check
-```
-
-Что проверяется автоматически:
-- local registration / login / logout
-- route guards
-- mock external auth
-- MBTI flow, сохранение черновика и результата
-- каталог типов, фильтр и переходы
-- отсутствие `console.error` / `pageerror` в основных сценариях
-- отсутствие горизонтального скролла, реальных переполнений и перекрытий на `360x800`, `768x1024`, `1440x900`, `1920x1080`
+Что проверяется:
+- корректность данных
+- наличие ключевых страниц и точек входа
+- отсутствие `Node.js`-зависимостей и внешних JS SDK в проекте
+- фиксация правила «только `HTML`, `CSS`, чистый `JavaScript`, `JSON`» в основных инструкциях
 
 ## Структура проекта
 
@@ -121,28 +97,18 @@ src/features/mbti/    движок теста, store, service
 src/pages/            entry-модули страниц
 src/shared/           shell, storage, data helpers
 src/styles/           дизайн-система, layout, page styles
-auth/                 страницы входа и callback/token flow
+auth/                 страницы входа и callback flow
 test/                 страница теста
 result/               страница результата
 types/                каталог и 16 страниц типов
 groups/               страница классификации
 chat/                 страница будущего чата
-tests/unit/           unit и smoke checks
-tests/e2e/            Playwright-сценарии
-tools/                visual check и вспомогательные CLI-скрипты
+tests/unit/           Python-проверки структуры и данных
+tools/                вспомогательные Python-скрипты
 ```
 
-## Текущее состояние
+## Ограничения
 
-Проект готов для локального запуска, демонстрации и frontend-only использования.
-
-Осознанные ограничения:
 - все пользовательские данные хранятся только в `localStorage`
-- для реального прод-использования авторизации и пользовательских данных нужен backend
+- для реального использования авторизации и пользовательских данных нужен backend
 - реальный `VK ID` / `Yandex ID` требуют собственных ключей и зарегистрированных redirect URI
-
-Что можно добавить позже:
-- backend для аккаунтов, сессий и хранения результатов
-- серверную защиту OAuth и полноценную валидацию провайдеров
-- настоящий анонимный чат и matching в реальном времени
-- синхронизацию результатов между устройствами

@@ -3,26 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Шаблон страницы типа — anonch</title>
+    <title>Шаблон типа MBTI — АнонЧ</title>
+    <meta name="description" content="Служебный шаблон страницы типа MBTI в АнонЧ." />
+    <meta name="robots" content="noindex,nofollow" />
+    <link rel="icon" href="/media/logo.png" type="image/png" sizes="283x283" />
+    <link rel="apple-touch-icon" href="/media/logo.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="stylesheet" href="/src/styles/tokens.css" />
     <link rel="stylesheet" href="/src/styles/base.css" />
     <link rel="stylesheet" href="/src/styles/layout.css" />
     <link rel="stylesheet" href="/src/styles/components.css" />
     <link rel="stylesheet" href="/src/styles/pages/type-detail.css" />
+    <script type="module" src="/src/shared/seo.js"></script>
     <script type="module" src="/src/shared/shell.js"></script>
     <script type="module" src="/src/pages/type-detail.js"></script>
   </head>
-  <body
-    data-page="types"
-    data-type-template="true"
-    data-type-template-title="Универсальный шаблон"
-  >
+  <body data-page="types" data-type-template="true">
     <a class="skip-link" href="#main-content">Перейти к содержимому</a>
     <div data-shell-header></div>
 
-    <main id="main-content" class="page-main" data-type-detail-page>
-      <section class="visually-hidden" aria-hidden="true">Универсальный шаблон страницы типа</section>
-    </main>
+    <main id="main-content" class="page-main" data-type-detail-page></main>
 
     <div data-shell-footer></div>
   </body>

@@ -20,7 +20,7 @@ export function validateLocalRegistration({ username, displayName }) {
     .replace(/\s+/g, " ");
 
   if (!cleanUsername) {
-    throw new Error("Укажите логин для локального профиля.");
+    throw new Error("Укажите логин для своего профиля.");
   }
 
   if (!LOGIN_PATTERN.test(cleanUsername)) {
@@ -41,7 +41,7 @@ export function validateLocalLogin({ username }) {
   const cleanUsername = String(username ?? "").trim();
 
   if (!cleanUsername) {
-    throw new Error("Введите логин, чтобы войти в локальный профиль.");
+    throw new Error("Введите логин, чтобы войти в свой профиль.");
   }
 
   return {

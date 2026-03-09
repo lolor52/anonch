@@ -9,7 +9,7 @@ export function getProviderStatus(config, { label, requiredFields, readyDescript
       label,
       mode: config.mode,
       ready: false,
-      description: `${label} отключён в конфигурации.`,
+      description: `${label} пока недоступен.`,
     };
   }
 
@@ -19,7 +19,7 @@ export function getProviderStatus(config, { label, requiredFields, readyDescript
       label,
       mode: config.mode,
       ready: true,
-      description: `${label} работает в mock-режиме без внешних ключей.`,
+      description: `Можно попробовать быстрый вход через ${label}.`,
     };
   }
 
@@ -39,7 +39,7 @@ export function getProviderStatus(config, { label, requiredFields, readyDescript
 
 export function assertRealProviderReady(config, { label, requiredFields }) {
   if (config.mode === "disabled") {
-    throw new Error(`${label} отключён. Включите его в src/config/auth-providers.js.`);
+    throw new Error(`${label} сейчас недоступен.`);
   }
 
   if (config.mode === "mock") {
@@ -49,19 +49,19 @@ export function assertRealProviderReady(config, { label, requiredFields }) {
   const missingConfigMessage = buildMissingConfigMessage(config, requiredFields);
 
   if (missingConfigMessage) {
-    throw new Error(`${label} не настроен. ${missingConfigMessage}`);
+    throw new Error(`${label} пока не готов. ${missingConfigMessage}`);
   }
 
   const runtimeOriginMessage = validateRuntimeOrigin(config);
 
   if (runtimeOriginMessage) {
-    throw new Error(`${label} не готов к запуску. ${runtimeOriginMessage}`);
+    throw new Error(`${label} пока недоступен. ${runtimeOriginMessage}`);
   }
 
   const featureFlagMessage = validateFeatureFlag(config);
 
   if (featureFlagMessage) {
-    throw new Error(`${label} не готов к запуску. ${featureFlagMessage}`);
+    throw new Error(`${label} пока недоступен. ${featureFlagMessage}`);
   }
 }
 
@@ -76,38 +76,6 @@ export function resolveRuntimeOrigin(config) {
 export function resolveProviderUrl(url, config) {
   const runtimeOrigin = resolveRuntimeOrigin(config);
   return new URL(url, runtimeOrigin).toString();
-}
-
-export async function loadExternalScript(url, globalName) {
-  if (typeof window === "undefined") {
-    throw new Error("Внешний SDK можно загрузить только в браузере.");
-  }
-
-  if (globalName && window[globalName]) {
-    return window[globalName];
-  }
-
-  const existingScript = document.querySelector(`script[data-sdk-src="${url}"]`);
-
-  if (existingScript) {
-    await waitForScriptLoad(existingScript);
-    return globalName ? window[globalName] : undefined;
-  }
-
-  const script = document.createElement("script");
-  script.src = url;
-  script.async = true;
-  script.dataset.sdkSrc = url;
-
-  const loadPromise = waitForScriptLoad(script);
-  document.head.append(script);
-  await loadPromise;
-
-  if (globalName && !window[globalName]) {
-    throw new Error(`SDK "${globalName}" загрузился, но не инициализировал ожидаемую глобальную переменную.`);
-  }
-
-  return globalName ? window[globalName] : undefined;
 }
 
 export function openAuthPopup(url, popupConfig, popupName) {
@@ -131,7 +99,7 @@ export function openAuthPopup(url, popupConfig, popupName) {
   const popup = window.open(url, popupName, features);
 
   if (!popup) {
-    throw new Error("Браузер заблокировал окно авторизации. Разрешите popup и попробуйте снова.");
+    throw new Error("Браузер заблокировал окно входа. Разрешите всплывающее окно и попробуйте снова.");
   }
 
   popup.focus();
@@ -199,12 +167,12 @@ export async function waitForAuthPopupMessage({ providerKey, state, popup, timeo
       }
 
       if (payload.state && payload.state !== state) {
-        rejectSafe(new Error("Параметр state не совпал. Авторизация была прервана."));
+        rejectSafe(new Error("Не удалось подтвердить вход. Попробуйте ещё раз."));
         return;
       }
 
       if (payload.error) {
-        rejectSafe(new Error(payload.errorDescription || `Провайдер ${providerKey} вернул ошибку "${payload.error}".`));
+        rejectSafe(new Error(payload.errorDescription || "Не удалось завершить вход. Попробуйте ещё раз."));
         return;
       }
 
@@ -219,7 +187,7 @@ export async function waitForAuthPopupMessage({ providerKey, state, popup, timeo
     }, 400);
 
     const timeoutId = window.setTimeout(() => {
-      rejectSafe(new Error("Провайдер не завершил авторизацию вовремя. Попробуйте ещё раз."));
+      rejectSafe(new Error("Сервис входа не ответил вовремя. Попробуйте ещё раз."));
     }, timeout);
 
     window.addEventListener("message", handleMessage);
@@ -239,16 +207,36 @@ export function extractAccessToken(payload) {
 }
 
 export function buildVkAuthorizeUrl(config) {
+  return buildAuthorizeUrl(config, {
+    clientFieldName: "appId",
+    clientParamName: "client_id",
+    extraParams: {
+      display: "page",
+      v: config.apiVersion ?? "5.199",
+    },
+  });
+}
+
+export function buildYandexAuthorizeUrl(config) {
+  return buildAuthorizeUrl(config, {
+    clientFieldName: "clientId",
+    clientParamName: "client_id",
+  });
+}
+
+function buildAuthorizeUrl(config, options) {
   const redirectUri = resolveProviderUrl(config.redirectUri, config);
   const state = createPendingAuthState(config.key);
   const url = new URL(config.authorizeUrl);
-  url.searchParams.set("client_id", String(config.appId));
+  url.searchParams.set(options.clientParamName, String(config[options.clientFieldName]));
   url.searchParams.set("redirect_uri", redirectUri);
   url.searchParams.set("response_type", config.responseType ?? "token");
   url.searchParams.set("scope", config.scope ?? "");
   url.searchParams.set("state", state);
-  url.searchParams.set("display", "page");
-  url.searchParams.set("v", config.apiVersion ?? "5.199");
+
+  Object.entries(options.extraParams ?? {}).forEach(([key, value]) => {
+    url.searchParams.set(key, String(value));
+  });
 
   return {
     state,
@@ -261,7 +249,7 @@ function validateRuntimeOrigin(config) {
   const runtimeOrigin = resolveRuntimeOrigin(config);
 
   if (allowedOrigins.length > 0 && !allowedOrigins.includes(runtimeOrigin)) {
-    return `Текущий origin "${runtimeOrigin}" не входит в allowedAppOrigins.`;
+    return "Этот способ входа пока недоступен на текущем адресе сайта.";
   }
 
   return "";
@@ -269,7 +257,7 @@ function validateRuntimeOrigin(config) {
 
 function validateFeatureFlag(config) {
   if (config.featureFlags?.enableRealAuth === false) {
-    return "Real-режим отключён флагом enableRealAuth.";
+    return "Этот способ входа пока выключен.";
   }
 
   return "";
@@ -282,36 +270,7 @@ function buildMissingConfigMessage(config, requiredFields) {
     return "";
   }
 
-  return `Заполните ${missingFields.join(", ")} в src/config/auth-providers.js или переключите mode на mock.`;
-}
-
-function waitForScriptLoad(script) {
-  if (script.dataset.sdkLoaded === "true") {
-    return Promise.resolve();
-  }
-
-  if (script.dataset.sdkLoaded === "error") {
-    return Promise.reject(new Error(`Не удалось загрузить внешний SDK: ${script.src}`));
-  }
-
-  return new Promise((resolve, reject) => {
-    script.addEventListener(
-      "load",
-      () => {
-        script.dataset.sdkLoaded = "true";
-        resolve();
-      },
-      { once: true }
-    );
-    script.addEventListener(
-      "error",
-      () => {
-        script.dataset.sdkLoaded = "error";
-        reject(new Error(`Не удалось загрузить внешний SDK: ${script.src}`));
-      },
-      { once: true }
-    );
-  });
+  return "Для него ещё не завершена настройка.";
 }
 
 function getPendingStorageKey(providerKey) {

@@ -79,7 +79,7 @@ export function createAuthManager(options = {}) {
     );
 
     if (displayNameExists) {
-      throw new Error("Такое имя уже занято. Укажите другое имя для локального профиля.");
+      throw new Error("Такое имя уже занято. Укажите другое имя для своего профиля.");
     }
 
     const timestamp = now();
@@ -145,9 +145,7 @@ export function createAuthManager(options = {}) {
     );
 
     if (usernameConflict) {
-      throw new Error(
-        `Нельзя сохранить профиль ${adapter.label}: локальный логин "${normalizedProfile.username}" уже используется.`
-      );
+      throw new Error(`Нельзя сохранить профиль ${adapter.label}: логин "${normalizedProfile.username}" уже занят.`);
     }
 
     const timestamp = now();
@@ -217,7 +215,7 @@ export function createAuthManager(options = {}) {
         label: "Локально",
         mode: "enabled",
         ready: true,
-        description: "Регистрация и вход работают целиком в localStorage.",
+        description: "Профиль создаётся прямо на этом сайте.",
       },
       ...externalProviders,
     ];

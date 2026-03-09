@@ -3,12 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>anonch — MBTI без шума</title>
+    <title>АнонЧ — тест MBTI, 16 типов и совместимость</title>
+    <meta
+      name="description"
+      content="АнонЧ — спокойный сайт про MBTI: тест из 22 вопросов, каталог 16 типов, 4 группы и совместимость."
+    />
+    <meta name="robots" content="index,follow" />
+    <link rel="icon" href="/media/logo.png" type="image/png" sizes="283x283" />
+    <link rel="apple-touch-icon" href="/media/logo.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="stylesheet" href="/src/styles/tokens.css" />
     <link rel="stylesheet" href="/src/styles/base.css" />
     <link rel="stylesheet" href="/src/styles/layout.css" />
     <link rel="stylesheet" href="/src/styles/components.css" />
     <link rel="stylesheet" href="/src/styles/pages/home.css" />
+    <script type="module" src="/src/shared/seo.js"></script>
     <script type="module" src="/src/shared/shell.js"></script>
     <script type="module" src="/src/pages/home.js"></script>
   </head>
@@ -17,11 +26,11 @@
     <div data-shell-header></div>
 
     <main id="main-content" class="page-main">
-      <section class="hero section">
+      <section class="hero section home-section home-section--hero">
         <div class="container-wide hero-grid">
           <div class="home-hero-copy">
-            <span class="eyebrow">MBTI profile match</span>
-            <h1>Понять свой тип, увидеть совместимость и сохранить результат локально.</h1>
+            <span class="eyebrow">Тест, типы и совместимость</span>
+            <h1>Понять свой тип, увидеть совместимость и сохранить результат у себя.</h1>
             <p class="lead">
               Спокойный интерфейс без перегруза: короткий MBTI-тест, отдельная страница
               результата, каталог 16 типов, классификация по 4 группам и будущий анонимный чат.
@@ -31,7 +40,7 @@
               <a class="btn btn--primary" href="/test/">Пройти тест</a>
               <a class="btn btn--secondary" href="/types/">Открыть 16 типов</a>
               <span class="badge" data-home-question-count>22</span>
-              <span class="badge badge--warm">local profile</span>
+              <span class="badge badge--warm">личный профиль</span>
             </div>
 
             <div class="hero-stats">
@@ -52,10 +61,10 @@
 
           <aside class="card auth-card">
             <span class="badge">Быстрый старт</span>
-            <h2 class="card-title">Войти, пройти тест и сохранить результат без backend.</h2>
+            <h2 class="card-title">Войти, пройти тест и сохранить свой результат.</h2>
             <p class="muted">
-              Локальная авторизация, восстановление сессии, прохождение теста и страница результата уже работают.
-              Внешний вход через VK ID и Yandex ID безопасно сводится к той же локальной сессии.
+              Можно создать свой профиль, пройти тест и позже вернуться к результату. Если удобнее,
+              используйте быстрый вход через VK ID или Yandex ID.
             </p>
 
             <div class="timeline">
@@ -63,7 +72,7 @@
                 <strong>1</strong>
                 <div class="stack">
                   <h3>Профиль и вход</h3>
-                  <p class="muted">Создайте локальный профиль или используйте VK ID / Yandex ID с безопасной локальной сессией.</p>
+                  <p class="muted">Создайте свой профиль или выберите быстрый вход через VK ID или Yandex ID.</p>
                 </div>
               </div>
               <div class="timeline-step">
@@ -88,19 +97,19 @@
             </div>
 
             <div class="cluster">
-              <span class="badge badge--soft">local auth</span>
+              <span class="badge badge--soft">свой профиль</span>
               <span class="badge badge--warm">VK ID</span>
               <span class="badge badge--soft">Yandex ID</span>
             </div>
 
             <div class="notice">
-              В браузере сохраняются только локальный профиль, сессия, черновик теста и результат.
+              В браузере сохраняются только ваш профиль, прогресс теста и итоговый результат.
             </div>
           </aside>
         </div>
       </section>
 
-      <section class="section">
+      <section class="section home-section">
         <div class="container">
           <div class="section-head section-head--inline">
             <div class="stack">
@@ -117,7 +126,7 @@
               <span class="badge">Локально</span>
               <h3 class="card-title">Результат остаётся у пользователя</h3>
               <p class="muted">
-                Профиль, сессия и пройденный тест будут жить в браузере, без обязательного backend.
+                Профиль, ответы и пройденный тест остаются в браузере и доступны при следующем открытии сайта.
               </p>
             </article>
 
@@ -140,7 +149,7 @@
         </div>
       </section>
 
-      <section class="section">
+      <section class="section home-section">
         <div class="container split-grid">
           <div class="card card--soft">
             <div class="section-head">
@@ -152,8 +161,8 @@
               <div class="timeline-step">
                 <strong>1</strong>
                 <div class="stack">
-                  <h3>Локальный вход</h3>
-                  <p class="muted">Пользователь выбирает локальный сценарий или будущий вход через провайдера.</p>
+                  <h3>Вход</h3>
+                  <p class="muted">Пользователь выбирает свой профиль или быстрый вход через VK ID и Yandex ID.</p>
                 </div>
               </div>
 
@@ -184,7 +193,7 @@
           </div>
 
           <div class="card card--contrast">
-            <span class="badge badge--warm">MBTI groups</span>
+            <span class="badge badge--warm">4 группы MBTI</span>
             <h2 class="card-title">4 группы, которые помогают быстро понять общую динамику.</h2>
             <ul class="card-list">
               <li>Аналитики: стратегия, структура, любопытство к системам.</li>
@@ -197,7 +206,7 @@
         </div>
       </section>
 
-      <section class="section">
+      <section class="section home-section">
         <div class="container">
           <div class="section-head section-head--inline">
             <div class="stack">
@@ -211,7 +220,32 @@
         </div>
       </section>
 
-      <section class="section">
+      <section class="section home-section home-section--partners" aria-labelledby="partners-title">
+        <div class="container">
+          <article class="card card--soft home-partner-card">
+            <div class="home-partner-copy">
+              <h2 id="partners-title">Партнеры</h2>
+              <span class="badge badge--soft">Фонд содействия инновациям</span>
+              <p class="lead">
+                Проект создан при поддержке Федерального государственного бюджетного учреждения
+                «Фонд содействия развитию малых форм предприятий в научно-технической сфере в
+                рамках программы «Студенческий стартап» федерального проекта «Платформа
+                университетского технологического предпринимательства»».
+              </p>
+            </div>
+            <div class="home-partner-logo">
+              <img
+                src="/media/head_logo_fasie.png"
+                alt="Логотип Фонда содействия инновациям"
+                width="373"
+                height="238"
+              />
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section home-section home-section--chat">
         <div class="container">
           <article class="card card--accent chat-teaser">
             <span class="eyebrow">Скоро</span>
@@ -221,8 +255,8 @@
               собеседника по совместимости и стилю взаимодействия.
             </p>
             <div class="cluster">
-              <a class="btn btn--primary" href="/chat/">Открыть заглушку чата</a>
-              <span class="badge badge--soft">matching by compatibility</span>
+              <a class="btn btn--primary" href="/chat/">Открыть страницу чата</a>
+              <span class="badge badge--soft">подбор по совместимости</span>
             </div>
           </article>
         </div>

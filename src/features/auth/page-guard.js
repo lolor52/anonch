@@ -3,7 +3,7 @@ import { createAuthManager } from "./auth-manager.js";
 const AUTH_MESSAGES = Object.freeze({
   "auth-required": "Сначала войдите, чтобы открыть тест и личный результат.",
   "signed-out": "Вы вышли из профиля. Чтобы продолжить, войдите снова.",
-  "session-error": "Не удалось восстановить сессию. Войдите в профиль заново.",
+  "session-error": "Не удалось восстановить вход. Войдите в профиль заново.",
 });
 
 export function ensureAuthenticated() {

@@ -1,5 +1,5 @@
 .auth-hero {
-  align-items: center;
+  align-items: start;
 }
 
 .auth-entry,
@@ -14,7 +14,7 @@
 }
 
 .auth-hero-note {
-  min-height: 100%;
+  min-height: 0;
 }
 
 .auth-summary-grid {

@@ -1,11 +1,12 @@
 import { getProviderConfig } from "../../../config/auth-providers.js";
 import {
   assertRealProviderReady,
+  buildYandexAuthorizeUrl,
+  clearPendingAuthState,
   extractAccessToken,
   getProviderStatus,
-  loadExternalScript,
-  resolveProviderUrl,
-  resolveRuntimeOrigin,
+  openAuthPopup,
+  waitForAuthPopupMessage,
 } from "./provider-utils.js";
 
 export function createYandexAuthAdapter(config = getProviderConfig("yandex")) {
@@ -18,7 +19,7 @@ export function createYandexAuthAdapter(config = getProviderConfig("yandex")) {
       return getProviderStatus(config, {
         label: "Yandex ID",
         requiredFields: ["clientId", "redirectUri"],
-        readyDescription: "Yandex ID готов к мгновенной авторизации через sdk-suggest.js и token-page.",
+        readyDescription: "Можно войти через отдельное окно.",
       });
     },
 
@@ -37,34 +38,26 @@ export function createYandexAuthAdapter(config = getProviderConfig("yandex")) {
         requiredFields: ["clientId", "redirectUri"],
       });
 
-      await loadExternalScript(config.sdkUrl, "YaAuthSuggest");
+      const { state, url } = buildYandexAuthorizeUrl(config);
+      const popup = openAuthPopup(url, config.popup, "yandex-auth");
 
-      const result = await window.YaAuthSuggest.init(
-        {
-          client_id: config.clientId,
-          response_type: config.responseType ?? "token",
-          redirect_uri: resolveProviderUrl(config.redirectUri, config),
-        },
-        config.tokenPageOrigin || resolveRuntimeOrigin(config)
-      );
+      try {
+        const authPayload = await waitForAuthPopupMessage({
+          providerKey: "yandex",
+          popup,
+          state,
+        });
+        const accessToken = extractAccessToken(authPayload);
 
-      if (result?.status === "error") {
-        throw new Error(`Yandex ID не инициализировался: ${result.code || "unknown_error"}.`);
+        if (!accessToken) {
+          throw new Error("Вход через Yandex ID не завершился. Попробуйте ещё раз.");
+        }
+
+        const profile = await fetchYandexProfile(accessToken, config);
+        return normalizeYandexProfile(profile);
+      } finally {
+        clearPendingAuthState("yandex");
       }
-
-      if (typeof result?.handler !== "function") {
-        throw new Error("Yandex ID не вернул обработчик входа. Проверьте client_id и redirect URI.");
-      }
-
-      const authPayload = await result.handler();
-      const accessToken = extractAccessToken(authPayload);
-
-      if (!accessToken) {
-        throw new Error("Yandex ID не вернул OAuth token. Проверьте token-page и настройки приложения.");
-      }
-
-      const profile = await fetchYandexProfile(accessToken, config);
-      return normalizeYandexProfile(profile);
     },
   };
 }
@@ -78,11 +71,11 @@ async function fetchYandexProfile(accessToken, config) {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.error_description || data.message || "Не удалось запросить профиль Yandex ID.");
+    throw new Error("Не удалось получить данные профиля Yandex ID.");
   }
 
   if (!data.id && !data.login) {
-    throw new Error("Yandex ID вернул неполный профиль пользователя.");
+    throw new Error("Yandex ID не передал данные профиля. Попробуйте ещё раз.");
   }
 
   return data;
