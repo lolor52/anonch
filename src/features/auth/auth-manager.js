@@ -1,12 +1,6 @@
 import { listProviderConfigs } from "../../config/auth-providers.js";
 import { createAuthStore, EMPTY_SESSION } from "./auth-store.js";
-import {
-  createLocalProfile,
-  normalizeDisplayName,
-  normalizeUsername,
-  validateLocalLogin,
-  validateLocalRegistration,
-} from "./providers/local-provider.js";
+import { createStoredProfile, normalizeUsername } from "./profile-utils.js";
 import { createVkAuthAdapter } from "./providers/vk-provider.js";
 import { createYandexAuthAdapter } from "./providers/yandex-provider.js";
 
@@ -19,6 +13,7 @@ export function createAuthManager(options = {}) {
   const createId = options.idGenerator ?? (() => `user_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`);
   const providerConfigs = options.providerConfigs ?? listProviderConfigs();
   const providers = buildProviders(providerConfigs);
+  const supportedProviderKeys = new Set(Object.keys(providers));
 
   function listAccounts() {
     return Object.values(store.readAccounts());
@@ -56,71 +51,14 @@ export function createAuthManager(options = {}) {
       return null;
     }
 
+    if (!supportedProviderKeys.has(currentUser.authProvider)) {
+      logger.error("[auth] Не удалось восстановить сессию: способ входа больше не поддерживается.");
+      store.clearSession();
+      emitAuthChanged(null);
+      return null;
+    }
+
     return currentUser;
-  }
-
-  function registerLocal(credentials) {
-    const validatedCredentials = validateLocalRegistration(credentials);
-    const accounts = store.readAccounts();
-    const accountList = Object.values(accounts);
-
-    const usernameExists = accountList.some(
-      (account) => normalizeUsername(account.username) === normalizeUsername(validatedCredentials.username)
-    );
-
-    if (usernameExists) {
-      throw new Error("Такой логин уже занят. Используйте другой логин.");
-    }
-
-    const displayNameExists = accountList.some(
-      (account) =>
-        account.authProvider === "local" &&
-        normalizeDisplayName(account.displayName) === normalizeDisplayName(validatedCredentials.displayName)
-    );
-
-    if (displayNameExists) {
-      throw new Error("Такое имя уже занято. Укажите другое имя для своего профиля.");
-    }
-
-    const timestamp = now();
-    const user = createLocalProfile({
-      id: createId(),
-      username: validatedCredentials.username,
-      displayName: validatedCredentials.displayName,
-      authProvider: "local",
-      avatar: "",
-      now: timestamp,
-    });
-
-    accounts[user.id] = user;
-    store.writeAccounts(accounts);
-    startSession(user, timestamp);
-    logger.info(`[auth] Создан локальный профиль ${user.username}.`);
-    return user;
-  }
-
-  function loginLocal(credentials) {
-    const validatedCredentials = validateLocalLogin(credentials);
-    const accounts = store.readAccounts();
-    const matchedUser = Object.values(accounts).find(
-      (account) => normalizeUsername(account.username) === normalizeUsername(validatedCredentials.username)
-    );
-
-    if (!matchedUser) {
-      throw new Error("Профиль с таким логином не найден. Проверьте логин или зарегистрируйтесь.");
-    }
-
-    const timestamp = now();
-    const updatedUser = {
-      ...matchedUser,
-      updatedAt: timestamp,
-    };
-
-    accounts[updatedUser.id] = updatedUser;
-    store.writeAccounts(accounts);
-    startSession(updatedUser, timestamp);
-    logger.info(`[auth] Выполнен локальный вход ${updatedUser.username}.`);
-    return updatedUser;
   }
 
   async function signInWithProvider(providerKey) {
@@ -132,7 +70,7 @@ export function createAuthManager(options = {}) {
 
     const normalizedProfile = await adapter.signIn();
     const accounts = store.readAccounts();
-    const accountList = Object.values(accounts);
+    const accountList = Object.values(accounts).filter((account) => supportedProviderKeys.has(account.authProvider));
     const existingUser = accountList.find(
       (account) =>
         account.authProvider === providerKey &&
@@ -145,7 +83,7 @@ export function createAuthManager(options = {}) {
     );
 
     if (usernameConflict) {
-      throw new Error(`Нельзя сохранить профиль ${adapter.label}: логин "${normalizedProfile.username}" уже занят.`);
+      throw new Error(`Нельзя сохранить профиль ${adapter.label}: идентификатор "${normalizedProfile.username}" уже занят.`);
     }
 
     const timestamp = now();
@@ -156,7 +94,7 @@ export function createAuthManager(options = {}) {
           avatar: normalizedProfile.avatar ?? "",
           updatedAt: timestamp,
         }
-      : createLocalProfile({
+      : createStoredProfile({
           id: createId(),
           username: normalizedProfile.username,
           displayName: normalizedProfile.displayName,
@@ -207,18 +145,7 @@ export function createAuthManager(options = {}) {
   }
 
   function listProviderStatuses() {
-    const externalProviders = Object.values(providers).map((provider) => provider.getStatus());
-
-    return [
-      {
-        key: "local",
-        label: "Локально",
-        mode: "enabled",
-        ready: true,
-        description: "Профиль создаётся прямо на этом сайте.",
-      },
-      ...externalProviders,
-    ];
+    return Object.values(providers).map((provider) => provider.getStatus());
   }
 
   function startSession(user, timestamp) {
@@ -257,9 +184,7 @@ export function createAuthManager(options = {}) {
     getCurrentUser,
     listAccounts,
     listProviderStatuses,
-    loginLocal,
     logout,
-    registerLocal,
     restoreSession,
     signInWithProvider,
     updateUserProfile,

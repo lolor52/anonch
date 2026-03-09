@@ -74,17 +74,50 @@ function resolveProviderKey() {
 function readAuthPayload() {
   const searchParams = new URLSearchParams(window.location.search);
   const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  const providerKey = resolveProviderKey();
+  const providerPayload = providerKey === "vk" ? readVkPayload(searchParams) : null;
 
   return {
-    state: hashParams.get("state") || searchParams.get("state") || "",
+    state: providerPayload?.state || hashParams.get("state") || searchParams.get("state") || "",
+    code: providerPayload?.code || searchParams.get("code") || "",
+    device_id: providerPayload?.device_id || searchParams.get("device_id") || "",
     access_token: hashParams.get("access_token") || "",
     expires_in: hashParams.get("expires_in") || "",
     user_id: hashParams.get("user_id") || searchParams.get("user_id") || "",
-    email: hashParams.get("email") || searchParams.get("email") || "",
-    error: hashParams.get("error") || searchParams.get("error") || "",
+    email: providerPayload?.email || hashParams.get("email") || searchParams.get("email") || "",
+    error: providerPayload?.error || hashParams.get("error") || searchParams.get("error") || "",
     errorDescription:
-      hashParams.get("error_description") || searchParams.get("error_description") || "",
+      providerPayload?.errorDescription ||
+      hashParams.get("error_description") ||
+      searchParams.get("error_description") ||
+      "",
   };
+}
+
+function readVkPayload(searchParams) {
+  const rawPayload = searchParams.get("payload");
+
+  if (!rawPayload) {
+    return null;
+  }
+
+  try {
+    const parsedPayload = JSON.parse(rawPayload);
+
+    return {
+      code: parsedPayload.code || "",
+      state: parsedPayload.state || "",
+      device_id: parsedPayload.device_id || "",
+      email: parsedPayload.email || "",
+      error: parsedPayload.error || "",
+      errorDescription: parsedPayload.error_description || parsedPayload.errorDescription || "",
+    };
+  } catch {
+    return {
+      error: "invalid_callback_payload",
+      errorDescription: "VK ID вернул повреждённый ответ авторизации.",
+    };
+  }
 }
 
 function clearSensitiveUrl() {

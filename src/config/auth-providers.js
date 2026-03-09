@@ -1,22 +1,17 @@
 const DEFAULT_APP_ORIGINS = ["http://127.0.0.1:4173", "http://localhost:4173"];
 
 export const AUTH_PROVIDER_CONFIGS = Object.freeze({
-  local: Object.freeze({
-    key: "local",
-    label: "Локально",
-    mode: "enabled",
-  }),
   vk: Object.freeze({
     key: "vk",
     label: "VK ID",
     mode: "mock",
     appId: "",
     redirectUri: "/auth/callback/?provider=vk",
-    authorizeUrl: "https://oauth.vk.com/authorize",
-    profileUrl: "https://api.vk.com/method/users.get",
-    apiVersion: "5.199",
-    scope: "email",
-    responseType: "token",
+    authorizeUrl: "https://id.vk.ru/authorize",
+    tokenUrl: "https://id.vk.ru/oauth2/auth",
+    profileUrl: "https://id.vk.ru/oauth2/user_info",
+    scope: "vkid.personal_info",
+    responseType: "code",
     popup: Object.freeze({
       width: 540,
       height: 720,
@@ -41,7 +36,7 @@ export const AUTH_PROVIDER_CONFIGS = Object.freeze({
     redirectUri: "/auth/callback/?provider=yandex",
     authorizeUrl: "https://oauth.yandex.com/authorize",
     profileUrl: "https://login.yandex.ru/info?format=json",
-    scope: "login:avatar login:email login:info",
+    scope: "login:avatar login:info",
     responseType: "token",
     popup: Object.freeze({
       width: 540,

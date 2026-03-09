@@ -24,7 +24,7 @@ export function createAuthStore(providedStorage) {
       }
 
       if (!isPlainObject(accounts)) {
-        throw new Error("Список локальных профилей имеет неверный формат.");
+        throw new Error("Список профилей имеет неверный формат.");
       }
 
       return accounts;

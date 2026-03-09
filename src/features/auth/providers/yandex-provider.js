@@ -19,7 +19,7 @@ export function createYandexAuthAdapter(config = getProviderConfig("yandex")) {
       return getProviderStatus(config, {
         label: "Yandex ID",
         requiredFields: ["clientId", "redirectUri"],
-        readyDescription: "Можно войти через отдельное окно.",
+        readyDescription: "Можно войти через отдельное окно. Токен используется только на время чтения профиля.",
       });
     },
 
@@ -64,6 +64,7 @@ export function createYandexAuthAdapter(config = getProviderConfig("yandex")) {
 
 async function fetchYandexProfile(accessToken, config) {
   const response = await fetch(config.profileUrl, {
+    cache: "no-store",
     headers: {
       Authorization: `OAuth ${accessToken}`,
     },

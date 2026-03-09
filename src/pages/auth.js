@@ -5,7 +5,6 @@ const pageHost = document.querySelector("[data-auth-page]");
 const authManager = createAuthManager();
 
 const state = {
-  activeTab: new URL(window.location.href).searchParams.get("mode") === "register" ? "register" : "login",
   message: null,
   messageKind: "info",
   currentUser: null,
@@ -62,7 +61,7 @@ function render() {
             </p>
           </div>
           <div class="cluster">
-            <span class="badge">свой профиль</span>
+            <span class="badge">браузерный профиль</span>
             <span class="badge badge--warm">VK ID</span>
             <span class="badge badge--soft">Yandex ID</span>
           </div>
@@ -97,115 +96,21 @@ function render() {
 }
 
 function renderGuestView(providerStatuses) {
-  const localProvider = providerStatuses.find((provider) => provider.key === "local");
+  const readyProviders = providerStatuses.filter((provider) => provider.ready);
+  const hasReadyProviders = readyProviders.length > 0;
 
   return `
     <div class="stack">
       <span class="badge">Варианты входа</span>
-      <h2 class="card-title">Выберите удобный способ входа.</h2>
+      <h2 class="card-title">Вход доступен только через соцсеть.</h2>
       <p class="muted">
-        Можно создать свой профиль и входить по логину. Если доступен быстрый вход через VK ID
-        или Yandex ID, сайт сам использует его и вернёт вас к тесту.
+        Выберите VK ID или Yandex ID. После успешного входа сайт создаст браузерный профиль,
+        сохранит прогресс и вернёт вас к тесту или нужному разделу.
       </p>
     </div>
 
-    <div class="tab-list" role="tablist" aria-label="Режим локальной авторизации">
-      <button
-        class="tab ${state.activeTab === "login" ? "is-active" : ""}"
-        id="auth-tab-login"
-        role="tab"
-        type="button"
-        aria-selected="${state.activeTab === "login"}"
-        aria-controls="auth-local-panel"
-        tabindex="${state.activeTab === "login" ? "0" : "-1"}"
-        data-auth-tab="login"
-      >
-        Вход
-      </button>
-      <button
-        class="tab ${state.activeTab === "register" ? "is-active" : ""}"
-        id="auth-tab-register"
-        role="tab"
-        type="button"
-        aria-selected="${state.activeTab === "register"}"
-        aria-controls="auth-local-panel"
-        tabindex="${state.activeTab === "register" ? "0" : "-1"}"
-        data-auth-tab="register"
-      >
-        Регистрация
-      </button>
-    </div>
-
-    <div id="auth-local-panel" role="tabpanel" aria-labelledby="auth-tab-${state.activeTab}">
-    <form class="auth-form" data-auth-form="${state.activeTab}">
-      ${
-        state.activeTab === "register"
-          ? `
-            <label class="field">
-              <span class="field-label" id="register-username-label">Логин</span>
-              <input
-                class="input"
-                id="register-username"
-                name="username"
-                type="text"
-                placeholder="Например, alina"
-                autocomplete="username"
-                aria-labelledby="register-username-label"
-                aria-describedby="register-username-hint"
-              />
-              <span class="field-hint" id="register-username-hint">Без пробелов. Логин должен быть уникальным.</span>
-            </label>
-
-            <label class="field">
-              <span class="field-label" id="register-display-name-label">Имя в профиле</span>
-              <input
-                class="input"
-                id="register-display-name"
-                name="displayName"
-                type="text"
-                placeholder="Например, Алина"
-                autocomplete="name"
-                aria-labelledby="register-display-name-label"
-                aria-describedby="register-display-name-hint"
-              />
-              <span class="field-hint" id="register-display-name-hint">Это имя будет видно в шапке и на страницах результата.</span>
-            </label>
-
-            <div class="cluster">
-              <button class="btn btn--primary" type="submit">Создать профиль</button>
-              <span class="badge badge--soft">${localProvider.description}</span>
-            </div>
-          `
-          : `
-            <label class="field">
-              <span class="field-label" id="login-username-label">Логин</span>
-              <input
-                class="input"
-                id="login-username"
-                name="username"
-                type="text"
-                placeholder="Например, alina"
-                autocomplete="username"
-                aria-labelledby="login-username-label"
-                aria-describedby="login-username-hint"
-              />
-              <span class="field-hint" id="login-username-hint">Используйте тот же логин, который указали при регистрации.</span>
-            </label>
-
-            <div class="cluster">
-              <button class="btn btn--primary" type="submit">Войти в профиль</button>
-              <a class="btn btn--ghost" href="/types/">Пока посмотреть типы</a>
-            </div>
-          `
-      }
-    </form>
-    </div>
-
-    <div class="auth-divider">или выберите другой способ входа</div>
-
     <div class="auth-provider-list">
       ${providerStatuses
-        .filter((provider) => provider.key !== "local")
         .map(
           (provider) => `
             <button
@@ -223,6 +128,12 @@ function renderGuestView(providerStatuses) {
         )
         .join("")}
     </div>
+
+    ${
+      hasReadyProviders
+        ? ""
+        : '<div class="auth-message auth-message--error" role="status">Сейчас ни один способ входа не настроен. Проверьте конфиг провайдеров.</div>'
+    }
 
     <div class="notice">
       После успешного входа вы попадёте на ${
@@ -282,15 +193,15 @@ function renderSide(providerStatuses) {
         <div class="timeline-step">
           <strong>1</strong>
           <div class="stack">
-            <h3>Профиль</h3>
-            <p class="muted">Создаётся ваш профиль с именем и выбранным способом входа.</p>
+            <h3>Соцвход</h3>
+            <p class="muted">Вы выбираете VK ID или Yandex ID и подтверждаете вход в отдельном окне.</p>
           </div>
         </div>
         <div class="timeline-step">
           <strong>2</strong>
           <div class="stack">
-            <h3>Возврат</h3>
-            <p class="muted">Сайт запоминает, что вы вошли, и возвращает к вашему профилю при следующем открытии.</p>
+            <h3>Профиль в браузере</h3>
+            <p class="muted">Сайт сохраняет только ваш браузерный профиль, прогресс теста и итоговый результат.</p>
           </div>
         </div>
         <div class="timeline-step">
@@ -325,89 +236,17 @@ function renderSide(providerStatuses) {
     <div class="auth-summary-grid">
       <article class="card">
         <strong class="stat-value">2</strong>
-        <span class="stat-label">раздела открываются после входа</span>
+        <span class="stat-label">способа входа доступны на странице</span>
       </article>
       <article class="card">
         <strong class="stat-value">1</strong>
-        <span class="stat-label">профиль хранит ваш прогресс и результат</span>
+        <span class="stat-label">браузерный профиль хранит ваш прогресс и результат</span>
       </article>
     </div>
   `;
 }
 
 function bindEvents() {
-  pageHost.querySelectorAll("[data-auth-tab]").forEach((button) => {
-    button.addEventListener("click", () => {
-      state.activeTab = button.dataset.authTab;
-      state.message = null;
-      state.messageKind = "info";
-      render();
-    });
-  });
-
-  const tabList = pageHost.querySelector('[role="tablist"]');
-
-  if (tabList) {
-    tabList.addEventListener("keydown", (event) => {
-      if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) {
-        return;
-      }
-
-      const tabs = [...tabList.querySelectorAll("[data-auth-tab]")];
-      const currentIndex = tabs.findIndex((tab) => tab.dataset.authTab === state.activeTab);
-
-      if (currentIndex === -1) {
-        return;
-      }
-
-      event.preventDefault();
-
-      let nextIndex = currentIndex;
-
-      if (event.key === "Home") {
-        nextIndex = 0;
-      } else if (event.key === "End") {
-        nextIndex = tabs.length - 1;
-      } else if (event.key === "ArrowRight" || event.key === "ArrowDown") {
-        nextIndex = (currentIndex + 1) % tabs.length;
-      } else {
-        nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
-      }
-
-      tabs[nextIndex].click();
-      tabs[nextIndex].focus();
-    });
-  }
-
-  const activeForm = pageHost.querySelector("[data-auth-form]");
-
-  if (activeForm) {
-    activeForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const formData = new FormData(activeForm);
-
-      try {
-        if (state.activeTab === "register") {
-          authManager.registerLocal({
-            username: formData.get("username"),
-            displayName: formData.get("displayName"),
-          });
-        } else {
-          authManager.loginLocal({
-            username: formData.get("username"),
-          });
-        }
-
-        state.message = null;
-        redirectAfterAuth();
-      } catch (error) {
-        state.message = error.message;
-        state.messageKind = "error";
-        render();
-      }
-    });
-  }
-
   pageHost.querySelectorAll("[data-provider-signin]").forEach((button) => {
     button.addEventListener("click", async () => {
       try {
@@ -444,19 +283,15 @@ function getProviderLabel(providerKey) {
     return "Yandex ID";
   }
 
-  return "свой профиль";
+  return "соцвход";
 }
 
 function getProviderStatusLabel(provider) {
-  if (provider.key === "local") {
-    return "Доступно";
-  }
-
   if (provider.mode === "mock") {
-    return "Быстрый вход";
+    return "Mock";
   }
 
-  return provider.ready ? "Доступно" : "Скоро";
+  return provider.ready ? "Доступно" : "Недоступно";
 }
 
 function formatDate(value) {

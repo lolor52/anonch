@@ -136,7 +136,7 @@ function renderFooter() {
         <div class="footer-column">
           <p class="footer-title">Статус</p>
           <div class="footer-links">
-            <span>Можно войти по имени, а также через VK ID или Yandex ID</span>
+            <span>Вход доступен через VK ID и Yandex ID</span>
             <span>Профиль, ответы теста и результат сохраняются в браузере</span>
             <a href="/chat/">Скоро: анонимный чат по MBTI</a>
           </div>
@@ -236,7 +236,6 @@ function renderUserActions(mode) {
 function renderGuestActions() {
   return `
     <span class="badge badge--soft">гость</span>
-    <a class="btn btn--secondary btn--sm" href="/auth/">Войти</a>
   `;
 }
 
@@ -249,7 +248,7 @@ function getAuthProviderLabel(providerKey) {
     return "Yandex ID";
   }
 
-  return "свой профиль";
+  return "вход";
 }
 
 function readCurrentUser() {

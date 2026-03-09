@@ -1,6 +1,7 @@
 const CALLBACK_MESSAGE_SOURCE = "mbti-auth-callback";
 const PENDING_STORAGE_PREFIX = "mbti.auth.pending";
 const DEFAULT_TIMEOUT = 120_000;
+const PKCE_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
 
 export function getProviderStatus(config, { label, requiredFields, readyDescription }) {
   if (config.mode === "disabled") {
@@ -106,7 +107,7 @@ export function openAuthPopup(url, popupConfig, popupName) {
   return popup;
 }
 
-export function createPendingAuthState(providerKey) {
+export function createPendingAuthState(providerKey, extraData = {}) {
   const state = createRandomState();
   const storageKey = getPendingStorageKey(providerKey);
 
@@ -115,10 +116,29 @@ export function createPendingAuthState(providerKey) {
     JSON.stringify({
       state,
       createdAt: Date.now(),
+      ...extraData,
     })
   );
 
   return state;
+}
+
+export function readPendingAuthState(providerKey) {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const rawValue = sessionStorage.getItem(getPendingStorageKey(providerKey));
+
+  if (!rawValue) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(rawValue);
+  } catch {
+    return null;
+  }
 }
 
 export function clearPendingAuthState(providerKey) {
@@ -145,7 +165,6 @@ export async function waitForAuthPopupMessage({ providerKey, state, popup, timeo
       }
 
       isDone = true;
-      clearPendingAuthState(providerKey);
       window.removeEventListener("message", handleMessage);
       window.clearInterval(closeWatcher);
       window.clearTimeout(timeoutId);
@@ -206,13 +225,23 @@ export function extractAccessToken(payload) {
   );
 }
 
-export function buildVkAuthorizeUrl(config) {
+export function extractAuthorizationCode(payload) {
+  return payload?.code ?? payload?.data?.code ?? null;
+}
+
+export async function buildVkAuthorizeUrl(config) {
+  const codeVerifier = createCodeVerifier();
+  const codeChallenge = await createCodeChallenge(codeVerifier);
+
   return buildAuthorizeUrl(config, {
     clientFieldName: "appId",
     clientParamName: "client_id",
+    pendingStateData: {
+      codeVerifier,
+    },
     extraParams: {
-      display: "page",
-      v: config.apiVersion ?? "5.199",
+      code_challenge: codeChallenge,
+      code_challenge_method: "S256",
     },
   });
 }
@@ -226,13 +255,16 @@ export function buildYandexAuthorizeUrl(config) {
 
 function buildAuthorizeUrl(config, options) {
   const redirectUri = resolveProviderUrl(config.redirectUri, config);
-  const state = createPendingAuthState(config.key);
+  const state = createPendingAuthState(config.key, options.pendingStateData);
   const url = new URL(config.authorizeUrl);
   url.searchParams.set(options.clientParamName, String(config[options.clientFieldName]));
   url.searchParams.set("redirect_uri", redirectUri);
   url.searchParams.set("response_type", config.responseType ?? "token");
-  url.searchParams.set("scope", config.scope ?? "");
   url.searchParams.set("state", state);
+
+  if (config.scope) {
+    url.searchParams.set("scope", config.scope);
+  }
 
   Object.entries(options.extraParams ?? {}).forEach(([key, value]) => {
     url.searchParams.set(key, String(value));
@@ -281,4 +313,27 @@ function createRandomState() {
   const buffer = new Uint8Array(16);
   crypto.getRandomValues(buffer);
   return Array.from(buffer, (value) => value.toString(16).padStart(2, "0")).join("");
+}
+
+function createCodeVerifier(length = 64) {
+  const buffer = new Uint8Array(length);
+  crypto.getRandomValues(buffer);
+
+  return Array.from(buffer, (value) => PKCE_ALPHABET[value % PKCE_ALPHABET.length]).join("");
+}
+
+async function createCodeChallenge(codeVerifier) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(codeVerifier));
+  return base64UrlEncode(digest);
+}
+
+function base64UrlEncode(buffer) {
+  const bytes = new Uint8Array(buffer);
+  let binary = "";
+
+  bytes.forEach((byte) => {
+    binary += String.fromCharCode(byte);
+  });
+
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/u, "");
 }

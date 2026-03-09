@@ -1,11 +1,13 @@
 import { getProviderConfig } from "../../../config/auth-providers.js";
 import {
   assertRealProviderReady,
+  extractAuthorizationCode,
   buildVkAuthorizeUrl,
   clearPendingAuthState,
-  extractAccessToken,
   getProviderStatus,
   openAuthPopup,
+  readPendingAuthState,
+  resolveProviderUrl,
   waitForAuthPopupMessage,
 } from "./provider-utils.js";
 
@@ -19,7 +21,7 @@ export function createVkAuthAdapter(config = getProviderConfig("vk")) {
       return getProviderStatus(config, {
         label: "VK ID",
         requiredFields: ["appId", "redirectUri"],
-        readyDescription: "Можно войти через отдельное окно.",
+        readyDescription: "Можно войти через отдельное окно по защищённой схеме VK ID.",
       });
     },
 
@@ -38,7 +40,7 @@ export function createVkAuthAdapter(config = getProviderConfig("vk")) {
         requiredFields: ["appId", "redirectUri"],
       });
 
-      const { state, url } = buildVkAuthorizeUrl(config);
+      const { state, url } = await buildVkAuthorizeUrl(config);
       const popup = openAuthPopup(url, config.popup, "vk-auth");
 
       try {
@@ -47,14 +49,24 @@ export function createVkAuthAdapter(config = getProviderConfig("vk")) {
           popup,
           state,
         });
-        const accessToken = extractAccessToken(authPayload);
+        const authCode = extractAuthorizationCode(authPayload);
+        const pendingState = readPendingAuthState("vk");
 
-        if (!accessToken) {
+        if (!authCode || !pendingState?.codeVerifier || !authPayload.device_id) {
           throw new Error("Вход через VK ID не завершился. Попробуйте ещё раз.");
         }
 
+        const tokens = await exchangeVkCodeForTokens({
+          authCode,
+          deviceId: authPayload.device_id,
+          state,
+          codeVerifier: pendingState.codeVerifier,
+          config,
+        });
+
+        const accessToken = tokens.access_token;
         const profile = await fetchVkProfile(accessToken, config);
-        return normalizeVkProfile(profile, authPayload);
+        return normalizeVkProfile(profile, authPayload.email);
       } finally {
         clearPendingAuthState("vk");
       }
@@ -62,38 +74,62 @@ export function createVkAuthAdapter(config = getProviderConfig("vk")) {
   };
 }
 
+async function exchangeVkCodeForTokens({ authCode, deviceId, state, codeVerifier, config }) {
+  const body = new URLSearchParams({
+    grant_type: "authorization_code",
+    code: authCode,
+    code_verifier: codeVerifier,
+    client_id: String(config.appId),
+    device_id: String(deviceId),
+    redirect_uri: resolveProviderUrl(config.redirectUri, config),
+    state,
+  });
+  const response = await fetch(config.tokenUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+    },
+    body: body.toString(),
+  });
+  const data = await response.json().catch(() => null);
+
+  if (!response.ok || data?.error || !data?.access_token) {
+    throw new Error("Не удалось обменять код VK ID на токен доступа.");
+  }
+
+  return data;
+}
+
 async function fetchVkProfile(accessToken, config) {
-  const requestUrl = new URL(config.profileUrl);
-  requestUrl.searchParams.set("fields", "photo_200,screen_name");
-  requestUrl.searchParams.set("access_token", accessToken);
-  requestUrl.searchParams.set("v", config.apiVersion ?? "5.199");
+  const body = new URLSearchParams({
+    access_token: accessToken,
+    client_id: String(config.appId),
+  });
+  const response = await fetch(config.profileUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+    },
+    body: body.toString(),
+  });
+  const data = await response.json().catch(() => null);
 
-  const response = await fetch(requestUrl.toString());
-  const data = await response.json();
-
-  if (!response.ok || data.error) {
+  if (!response.ok || !data?.user?.user_id) {
     throw new Error("Не удалось получить данные профиля VK ID.");
   }
 
-  const profile = data.response?.[0];
-
-  if (!profile?.id) {
-    throw new Error("VK ID не передал данные профиля. Попробуйте ещё раз.");
-  }
-
-  return profile;
+  return data.user;
 }
 
-function normalizeVkProfile(profile, authPayload) {
-  const screenName = String(profile.screen_name ?? "").trim();
-  const username = screenName ? `vk_${screenName}` : `vk_${profile.id}`;
+function normalizeVkProfile(profile, email) {
+  const username = `vk_${profile.user_id}`;
   const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(" ").trim();
-  const displayName = fullName || authPayload.email || `VK ${profile.id}`;
+  const displayName = fullName || email || `VK ${profile.user_id}`;
 
   return {
     username,
     displayName,
     authProvider: "vk",
-    avatar: profile.photo_200 ?? "",
+    avatar: profile.avatar ?? "",
   };
 }
