@@ -1,0 +1,36 @@
+.directory-tools {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.directory-tools .input {
+  max-width: 28rem;
+}
+
+.directory-note {
+  max-width: 42rem;
+}
+
+.directory-summary {
+  min-height: 1.5em;
+}
+
+.directory-empty {
+  min-height: 14rem;
+  place-content: center;
+}
+
+.types-grid .card {
+  height: 100%;
+  grid-template-rows: auto auto 1fr auto;
+}
+
+.type-card-list {
+  margin-top: var(--space-xs);
+}
+
+@media (min-width: 48rem) {
+  .directory-tools {
+    align-items: start;
+  }
+}

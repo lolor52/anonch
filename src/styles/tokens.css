@@ -1,0 +1,78 @@
+:root {
+  color-scheme: light;
+  --font-body: "Trebuchet MS", "Segoe UI", sans-serif;
+  --font-display: "Avenir Next", "Trebuchet MS", sans-serif;
+
+  --color-bg: #f4efe8;
+  --color-bg-accent: #efe6d7;
+  --color-surface: rgba(255, 251, 247, 0.9);
+  --color-surface-strong: #fffdfa;
+  --color-surface-muted: #ebf2ee;
+  --color-surface-contrast: #153334;
+  --color-text: #163132;
+  --color-text-muted: #5b6f70;
+  --color-text-soft: #7e8f90;
+  --color-border: rgba(22, 49, 50, 0.12);
+  --color-border-strong: rgba(22, 49, 50, 0.2);
+  --color-brand: #16756f;
+  --color-brand-strong: #0f5b57;
+  --color-brand-soft: rgba(22, 117, 111, 0.12);
+  --color-accent: #e5845a;
+  --color-accent-soft: rgba(229, 132, 90, 0.14);
+  --color-success: #2b7a57;
+  --color-warning: #b26a1e;
+  --color-danger: #b34b46;
+  --color-info: #2d6ca3;
+  --color-focus: rgba(22, 117, 111, 0.24);
+  --color-overlay: rgba(18, 32, 36, 0.72);
+
+  --shadow-sm: 0 12px 30px rgba(31, 54, 56, 0.08);
+  --shadow-md: 0 20px 50px rgba(25, 43, 48, 0.12);
+  --shadow-lg: 0 30px 80px rgba(17, 32, 35, 0.18);
+
+  --radius-xs: 0.75rem;
+  --radius-sm: 1rem;
+  --radius-md: 1.5rem;
+  --radius-lg: 2rem;
+  --radius-pill: 999px;
+
+  --space-3xs: clamp(0.25rem, 0.23rem + 0.12vw, 0.4rem);
+  --space-2xs: clamp(0.5rem, 0.46rem + 0.18vw, 0.7rem);
+  --space-xs: clamp(0.75rem, 0.68rem + 0.24vw, 1rem);
+  --space-sm: clamp(1rem, 0.92rem + 0.34vw, 1.25rem);
+  --space-md: clamp(1.25rem, 1.08rem + 0.52vw, 1.75rem);
+  --space-lg: clamp(1.5rem, 1.28rem + 0.8vw, 2.25rem);
+  --space-xl: clamp(2rem, 1.7rem + 1vw, 3rem);
+  --space-2xl: clamp(2.75rem, 2.2rem + 1.8vw, 4.5rem);
+  --space-3xl: clamp(3.5rem, 2.8rem + 2.6vw, 6rem);
+
+  --text-xs: clamp(0.75rem, 0.73rem + 0.08vw, 0.82rem);
+  --text-sm: clamp(0.88rem, 0.85rem + 0.12vw, 0.96rem);
+  --text-md: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --text-lg: clamp(1.125rem, 1.03rem + 0.38vw, 1.35rem);
+  --text-xl: clamp(1.4rem, 1.15rem + 0.9vw, 2rem);
+  --text-2xl: clamp(1.9rem, 1.45rem + 1.8vw, 3.4rem);
+  --text-3xl: clamp(2.4rem, 1.8rem + 2.6vw, 4.5rem);
+
+  --line-tight: 1.1;
+  --line-snug: 1.25;
+  --line-base: 1.6;
+
+  --container-narrow: min(100% - 1.5rem, 44rem);
+  --container: min(100% - 1.5rem, 72rem);
+  --container-wide: min(100% - 1.5rem, 84rem);
+
+  --transition-fast: 160ms ease;
+  --transition-base: 240ms ease;
+  --transition-slow: 360ms ease;
+
+  --header-height: 5rem;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --container-narrow: min(100% - 3rem, 44rem);
+    --container: min(100% - 3rem, 72rem);
+    --container-wide: min(100% - 3rem, 84rem);
+  }
+}

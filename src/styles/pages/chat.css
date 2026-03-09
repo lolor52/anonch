@@ -1,0 +1,15 @@
+.chat-preview {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.chat-feature-grid {
+  display: grid;
+  gap: var(--space-md);
+}
+
+@media (min-width: 48rem) {
+  .chat-feature-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

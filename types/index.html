@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Все типы MBTI — anonch</title>
+    <link rel="stylesheet" href="/src/styles/tokens.css" />
+    <link rel="stylesheet" href="/src/styles/base.css" />
+    <link rel="stylesheet" href="/src/styles/layout.css" />
+    <link rel="stylesheet" href="/src/styles/components.css" />
+    <link rel="stylesheet" href="/src/styles/pages/types.css" />
+    <script type="module" src="/src/shared/shell.js"></script>
+    <script type="module" src="/src/pages/types.js"></script>
+  </head>
+  <body data-page="types">
+    <a class="skip-link" href="#main-content">Перейти к содержимому</a>
+    <div data-shell-header></div>
+
+    <main id="main-content" class="page-main">
+      <section class="section hero">
+        <div class="container section-head">
+          <span class="eyebrow">Каталог 16 типов</span>
+          <h1>Все 16 MBTI-типов в одном каталоге с фильтром по группам и быстрым поиском.</h1>
+          <p class="lead">
+            Можно искать по коду и названию, переключать 4 группы и сразу переходить на отдельную страницу любого типа.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container stack-lg">
+          <div class="directory-tools">
+            <label class="field">
+              <span class="field-label" id="types-search-label">Быстрый поиск по типу</span>
+              <input
+                class="input"
+                id="types-search"
+                type="search"
+                placeholder="Например, INTJ или ENFP"
+                aria-labelledby="types-search-label"
+                data-types-search
+              />
+            </label>
+
+            <div class="tab-list" aria-label="Фильтр по группам" data-types-tabs></div>
+
+            <p class="directory-summary subtle" aria-live="polite" data-types-summary></p>
+
+            <p class="directory-note muted">
+              Карточки собираются из JSON: описание, группа и ключевые сильные стороны подставляются автоматически без копипасты.
+            </p>
+          </div>
+
+          <div class="types-grid" aria-live="polite" data-types-grid></div>
+        </div>
+      </section>
+    </main>
+
+    <div data-shell-footer></div>
+  </body>
+</html>

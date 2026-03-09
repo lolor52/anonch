@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Тест MBTI — anonch</title>
+    <link rel="stylesheet" href="/src/styles/tokens.css" />
+    <link rel="stylesheet" href="/src/styles/base.css" />
+    <link rel="stylesheet" href="/src/styles/layout.css" />
+    <link rel="stylesheet" href="/src/styles/components.css" />
+    <link rel="stylesheet" href="/src/styles/pages/test.css" />
+    <script type="module" src="/src/features/auth/protected-page.js"></script>
+    <script type="module" src="/src/shared/shell.js"></script>
+    <script type="module" src="/src/pages/test.js"></script>
+  </head>
+  <body data-page="test">
+    <a class="skip-link" href="#main-content">Перейти к содержимому</a>
+    <div data-shell-header></div>
+
+    <main id="main-content" class="page-main">
+      <section class="section hero">
+        <div class="container section-head">
+          <span class="eyebrow">Тест MBTI</span>
+          <h1>Страница теста ведёт по 22 вопросам спокойно, без перегруза и без потери прогресса.</h1>
+          <p class="lead">
+            Вопросы загружаются из JSON, ответы сохраняются локально, а завершение всегда ведёт на отдельную страницу результата.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container test-layout" data-test-layout></div>
+      </section>
+    </main>
+
+    <div data-shell-footer></div>
+  </body>
+</html>

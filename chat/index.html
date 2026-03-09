@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Анонимный чат — anonch</title>
+    <link rel="stylesheet" href="/src/styles/tokens.css" />
+    <link rel="stylesheet" href="/src/styles/base.css" />
+    <link rel="stylesheet" href="/src/styles/layout.css" />
+    <link rel="stylesheet" href="/src/styles/components.css" />
+    <link rel="stylesheet" href="/src/styles/pages/chat.css" />
+    <script type="module" src="/src/shared/shell.js"></script>
+  </head>
+  <body data-page="chat">
+    <a class="skip-link" href="#main-content">Перейти к содержимому</a>
+    <div data-shell-header></div>
+
+    <main id="main-content" class="page-main">
+      <section class="section hero">
+        <div class="container section-head">
+          <span class="eyebrow">Скоро в продукте</span>
+          <h1>Скоро будет реализован анонимный чат с подбором подходящих MBTI.</h1>
+          <p class="lead">
+            Пока это честная заглушка без фальшивых обещаний: здесь нет скрытого функционала, только аккуратное объяснение следующего шага продукта.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container chat-preview">
+          <article class="card card--accent">
+            <span class="badge badge--warm">Что появится позже</span>
+            <h2>Подбор собеседников по типу, совместимости и стилю общения.</h2>
+            <p class="muted">
+              Пользователь сможет перейти из результата теста в список подходящих собеседников и начать анонимный диалог без лишней настройки.
+            </p>
+            <div class="cluster">
+              <span class="badge">match by type</span>
+              <span class="badge badge--soft">anonymous</span>
+              <span class="badge badge--warm">safe placeholders first</span>
+            </div>
+          </article>
+
+          <div class="chat-feature-grid">
+            <article class="card">
+              <h3 class="card-title">Подходящие собеседники</h3>
+              <p class="muted">Система подскажет типы, с которыми у пользователя выше шанс на комфортный контакт.</p>
+            </article>
+            <article class="card">
+              <h3 class="card-title">Контекст из результата</h3>
+              <p class="muted">Связка с MBTI-результатом поможет сразу объяснить, почему выбран именно такой матч.</p>
+            </article>
+            <article class="card">
+              <h3 class="card-title">Мягкий сценарий старта</h3>
+              <p class="muted">Экран входа в чат останется простым: без перегруза, со спокойной и понятной подачей.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div data-shell-footer></div>
+  </body>
+</html>

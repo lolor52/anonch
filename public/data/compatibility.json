@@ -1,0 +1,634 @@
+{
+  "order": [
+    "INTJ",
+    "INTP",
+    "ENTJ",
+    "ENTP",
+    "INFJ",
+    "INFP",
+    "ENFJ",
+    "ENFP",
+    "ISTJ",
+    "ISFJ",
+    "ESTJ",
+    "ESFJ",
+    "ISTP",
+    "ISFP",
+    "ESTP",
+    "ESFP"
+  ],
+  "matrix": {
+    "INTJ": {
+      "INTJ": 5,
+      "INTP": 7,
+      "ENTJ": 7,
+      "ENTP": 7,
+      "INFJ": 6,
+      "INFP": 6,
+      "ENFJ": 5,
+      "ENFP": 7,
+      "ISTJ": 6,
+      "ISFJ": 4,
+      "ESTJ": 5,
+      "ESFJ": 2,
+      "ISTP": 6,
+      "ISFP": 4,
+      "ESTP": 5,
+      "ESFP": 2
+    },
+    "INTP": {
+      "INTJ": 7,
+      "INTP": 5,
+      "ENTJ": 7,
+      "ENTP": 7,
+      "INFJ": 6,
+      "INFP": 6,
+      "ENFJ": 7,
+      "ENFP": 5,
+      "ISTJ": 6,
+      "ISFJ": 4,
+      "ESTJ": 5,
+      "ESFJ": 2,
+      "ISTP": 6,
+      "ISFP": 4,
+      "ESTP": 5,
+      "ESFP": 2
+    },
+    "ENTJ": {
+      "INTJ": 7,
+      "INTP": 7,
+      "ENTJ": 5,
+      "ENTP": 7,
+      "INFJ": 5,
+      "INFP": 7,
+      "ENFJ": 6,
+      "ENFP": 6,
+      "ISTJ": 5,
+      "ISFJ": 3,
+      "ESTJ": 6,
+      "ESFJ": 4,
+      "ISTP": 5,
+      "ISFP": 2,
+      "ESTP": 2,
+      "ESFP": 4
+    },
+    "ENTP": {
+      "INTJ": 7,
+      "INTP": 7,
+      "ENTJ": 7,
+      "ENTP": 5,
+      "INFJ": 7,
+      "INFP": 5,
+      "ENFJ": 6,
+      "ENFP": 6,
+      "ISTJ": 5,
+      "ISFJ": 2,
+      "ESTJ": 2,
+      "ESFJ": 4,
+      "ISTP": 5,
+      "ISFP": 3,
+      "ESTP": 6,
+      "ESFP": 4
+    },
+    "INFJ": {
+      "INTJ": 6,
+      "INTP": 6,
+      "ENTJ": 5,
+      "ENTP": 7,
+      "INFJ": 5,
+      "INFP": 7,
+      "ENFJ": 7,
+      "ENFP": 7,
+      "ISTJ": 4,
+      "ISFJ": 6,
+      "ESTJ": 3,
+      "ESFJ": 5,
+      "ISTP": 4,
+      "ISFP": 2,
+      "ESTP": 2,
+      "ESFP": 5
+    },
+    "INFP": {
+      "INTJ": 6,
+      "INTP": 6,
+      "ENTJ": 7,
+      "ENTP": 5,
+      "INFJ": 7,
+      "INFP": 5,
+      "ENFJ": 7,
+      "ENFP": 7,
+      "ISTJ": 4,
+      "ISFJ": 2,
+      "ESTJ": 2,
+      "ESFJ": 5,
+      "ISTP": 4,
+      "ISFP": 6,
+      "ESTP": 3,
+      "ESFP": 5
+    },
+    "ENFJ": {
+      "INTJ": 5,
+      "INTP": 7,
+      "ENTJ": 6,
+      "ENTP": 6,
+      "INFJ": 7,
+      "INFP": 7,
+      "ENFJ": 5,
+      "ENFP": 7,
+      "ISTJ": 2,
+      "ISFJ": 5,
+      "ESTJ": 4,
+      "ESFJ": 6,
+      "ISTP": 2,
+      "ISFP": 5,
+      "ESTP": 4,
+      "ESFP": 6
+    },
+    "ENFP": {
+      "INTJ": 7,
+      "INTP": 5,
+      "ENTJ": 6,
+      "ENTP": 6,
+      "INFJ": 7,
+      "INFP": 7,
+      "ENFJ": 7,
+      "ENFP": 5,
+      "ISTJ": 2,
+      "ISFJ": 5,
+      "ESTJ": 4,
+      "ESFJ": 6,
+      "ISTP": 2,
+      "ISFP": 5,
+      "ESTP": 4,
+      "ESFP": 6
+    },
+    "ISTJ": {
+      "INTJ": 6,
+      "INTP": 6,
+      "ENTJ": 5,
+      "ENTP": 5,
+      "INFJ": 4,
+      "INFP": 4,
+      "ENFJ": 2,
+      "ENFP": 2,
+      "ISTJ": 5,
+      "ISFJ": 7,
+      "ESTJ": 7,
+      "ESFJ": 6,
+      "ISTP": 7,
+      "ISFP": 6,
+      "ESTP": 7,
+      "ESFP": 7
+    },
+    "ISFJ": {
+      "INTJ": 4,
+      "INTP": 4,
+      "ENTJ": 3,
+      "ENTP": 2,
+      "INFJ": 6,
+      "INFP": 2,
+      "ENFJ": 5,
+      "ENFP": 5,
+      "ISTJ": 7,
+      "ISFJ": 5,
+      "ESTJ": 6,
+      "ESFJ": 7,
+      "ISTP": 6,
+      "ISFP": 7,
+      "ESTP": 7,
+      "ESFP": 7
+    },
+    "ESTJ": {
+      "INTJ": 5,
+      "INTP": 5,
+      "ENTJ": 6,
+      "ENTP": 2,
+      "INFJ": 3,
+      "INFP": 2,
+      "ENFJ": 4,
+      "ENFP": 4,
+      "ISTJ": 7,
+      "ISFJ": 6,
+      "ESTJ": 5,
+      "ESFJ": 7,
+      "ISTP": 7,
+      "ISFP": 7,
+      "ESTP": 7,
+      "ESFP": 6
+    },
+    "ESFJ": {
+      "INTJ": 2,
+      "INTP": 2,
+      "ENTJ": 4,
+      "ENTP": 4,
+      "INFJ": 5,
+      "INFP": 5,
+      "ENFJ": 6,
+      "ENFP": 6,
+      "ISTJ": 6,
+      "ISFJ": 7,
+      "ESTJ": 7,
+      "ESFJ": 5,
+      "ISTP": 7,
+      "ISFP": 7,
+      "ESTP": 6,
+      "ESFP": 7
+    },
+    "ISTP": {
+      "INTJ": 6,
+      "INTP": 6,
+      "ENTJ": 5,
+      "ENTP": 5,
+      "INFJ": 4,
+      "INFP": 4,
+      "ENFJ": 2,
+      "ENFP": 2,
+      "ISTJ": 7,
+      "ISFJ": 6,
+      "ESTJ": 7,
+      "ESFJ": 7,
+      "ISTP": 5,
+      "ISFP": 7,
+      "ESTP": 7,
+      "ESFP": 6
+    },
+    "ISFP": {
+      "INTJ": 4,
+      "INTP": 4,
+      "ENTJ": 2,
+      "ENTP": 3,
+      "INFJ": 2,
+      "INFP": 6,
+      "ENFJ": 5,
+      "ENFP": 5,
+      "ISTJ": 6,
+      "ISFJ": 7,
+      "ESTJ": 7,
+      "ESFJ": 7,
+      "ISTP": 7,
+      "ISFP": 5,
+      "ESTP": 6,
+      "ESFP": 7
+    },
+    "ESTP": {
+      "INTJ": 5,
+      "INTP": 5,
+      "ENTJ": 2,
+      "ENTP": 6,
+      "INFJ": 2,
+      "INFP": 3,
+      "ENFJ": 4,
+      "ENFP": 4,
+      "ISTJ": 7,
+      "ISFJ": 7,
+      "ESTJ": 7,
+      "ESFJ": 6,
+      "ISTP": 7,
+      "ISFP": 6,
+      "ESTP": 5,
+      "ESFP": 7
+    },
+    "ESFP": {
+      "INTJ": 2,
+      "INTP": 2,
+      "ENTJ": 4,
+      "ENTP": 4,
+      "INFJ": 5,
+      "INFP": 5,
+      "ENFJ": 6,
+      "ENFP": 6,
+      "ISTJ": 7,
+      "ISFJ": 7,
+      "ESTJ": 6,
+      "ESFJ": 7,
+      "ISTP": 6,
+      "ISFP": 7,
+      "ESTP": 7,
+      "ESFP": 5
+    }
+  },
+  "pairNotes": {
+    "ENFP:INTJ": {
+      "tone": "strong",
+      "text": "Один приносит живость и новые связи, другой — структуру и дальний горизонт."
+    },
+    "ENFP:INFJ": {
+      "tone": "strong",
+      "text": "Тёплая эмпатия здесь сочетается с идеями и ощущением смысла."
+    },
+    "ENTP:INFJ": {
+      "tone": "strong",
+      "text": "Один раскачивает новые версии, второй удерживает глубину и направление."
+    },
+    "ENTP:INTJ": {
+      "tone": "strong",
+      "text": "Спор идей быстро превращается в рабочую стратегию."
+    },
+    "ENFJ:INTP": {
+      "tone": "strong",
+      "text": "Логика и человеческое чутьё хорошо дополняют друг друга."
+    },
+    "ENFJ:INFP": {
+      "tone": "strong",
+      "text": "Общие ценности помогают держать близость без лишней жёсткости."
+    },
+    "ENTJ:INFP": {
+      "tone": "strong",
+      "text": "Один задаёт темп, второй не даёт потерять смысл по дороге."
+    },
+    "ENTJ:INTP": {
+      "tone": "strong",
+      "text": "Сильная связка идей, структуры и интеллектуального уважения."
+    },
+    "ESFP:ISTJ": {
+      "tone": "strong",
+      "text": "Стабильность встречается с живостью, и пара не застывает."
+    },
+    "ESFP:ISFJ": {
+      "tone": "strong",
+      "text": "Тепло, забота и лёгкость контакта быстро создают комфорт."
+    },
+    "ESTP:ISFJ": {
+      "tone": "strong",
+      "text": "Один приносит смелость, второй — мягкую надёжность."
+    },
+    "ESTP:ISTJ": {
+      "tone": "strong",
+      "text": "Практичность и скорость дают рабочий баланс."
+    },
+    "ESFJ:ISTP": {
+      "tone": "strong",
+      "text": "Один чинит и действует, второй удерживает людей и договорённости."
+    },
+    "ESFJ:ISFP": {
+      "tone": "strong",
+      "text": "Тепло и такт помогают обходить острые углы без лишнего давления."
+    },
+    "ESTJ:ISFP": {
+      "tone": "strong",
+      "text": "Один собирает рамку, второй добавляет вкус и человечность."
+    },
+    "ESTJ:ISTP": {
+      "tone": "strong",
+      "text": "Решения быстро переходят в действие, если роли понятны."
+    },
+    "ESFP:INTJ": {
+      "tone": "difficult",
+      "text": "Один хочет долгую стратегию, второй живёт моментом; ритм быстро расходится."
+    },
+    "ESFJ:INTJ": {
+      "tone": "difficult",
+      "text": "Логическая сухость одного и социальная чувствительность другого легко ранят."
+    },
+    "ESFP:INTP": {
+      "tone": "difficult",
+      "text": "Спонтанность и абстрактность часто не совпадают по темпу и ожиданиям."
+    },
+    "ESFJ:INTP": {
+      "tone": "difficult",
+      "text": "Один ждёт ясной логики, другой — явного участия и тепла."
+    },
+    "ENTJ:ISFP": {
+      "tone": "difficult",
+      "text": "Прямой нажим одного быстро задевает внутреннюю чувствительность другого."
+    },
+    "ENTJ:ESTP": {
+      "tone": "difficult",
+      "text": "Оба быстрые, но один хочет контролировать, а второй — проверять границы."
+    },
+    "INFJ:ISFP": {
+      "tone": "difficult",
+      "text": "Один ищет скрытый смысл, другой держится чувства момента; им трудно синхронизироваться в долгом плане."
+    },
+    "ESTP:INFJ": {
+      "tone": "difficult",
+      "text": "Внешний темп и внутренняя глубина часто не совпадают по способу решения."
+    },
+    "ENTP:ISFJ": {
+      "tone": "difficult",
+      "text": "Один ломает рамки, другой держится проверенного, и усталость растёт слишком быстро."
+    },
+    "ENTP:ESTJ": {
+      "tone": "difficult",
+      "text": "Один любит открытые варианты, другой хочет закрыть вопрос и идти по плану."
+    },
+    "INFP:ISFJ": {
+      "tone": "difficult",
+      "text": "Один уходит в внутренний поиск, другой ждёт более конкретной взаимности и быта."
+    },
+    "ESTJ:INFP": {
+      "tone": "difficult",
+      "text": "Правила и внутренняя свобода часто сталкиваются лоб в лоб."
+    },
+    "ENFJ:ISTP": {
+      "tone": "difficult",
+      "text": "Один хочет проговаривать чувства, другой предпочитает молча чинить проблему."
+    },
+    "ENFJ:ISTJ": {
+      "tone": "difficult",
+      "text": "Один ведёт через отношения, другой — через правило; обоим трудно признать чужой темп."
+    },
+    "ENFP:ISTP": {
+      "tone": "difficult",
+      "text": "Эмоциональная экспрессия одного и сдержанность другого быстро создают шум."
+    },
+    "ENFP:ISTJ": {
+      "tone": "difficult",
+      "text": "Свобода и жёсткий порядок легко входят в прямой конфликт."
+    }
+  },
+  "highlights": {
+    "INTJ": {
+      "strong": [
+        "ENFP",
+        "ENTJ",
+        "ENTP"
+      ],
+      "difficult": [
+        "ESFJ",
+        "ESFP",
+        "ISFJ"
+      ]
+    },
+    "INTP": {
+      "strong": [
+        "ENFJ",
+        "ENTJ",
+        "ENTP"
+      ],
+      "difficult": [
+        "ESFJ",
+        "ESFP",
+        "ISFJ"
+      ]
+    },
+    "ENTJ": {
+      "strong": [
+        "ENTP",
+        "INFP",
+        "INTJ"
+      ],
+      "difficult": [
+        "ESTP",
+        "ISFP",
+        "ISFJ"
+      ]
+    },
+    "ENTP": {
+      "strong": [
+        "ENTJ",
+        "INFJ",
+        "INTJ"
+      ],
+      "difficult": [
+        "ESTJ",
+        "ISFJ",
+        "ISFP"
+      ]
+    },
+    "INFJ": {
+      "strong": [
+        "ENFJ",
+        "ENFP",
+        "ENTP"
+      ],
+      "difficult": [
+        "ESTP",
+        "ISFP",
+        "ESTJ"
+      ]
+    },
+    "INFP": {
+      "strong": [
+        "ENFJ",
+        "ENFP",
+        "ENTJ"
+      ],
+      "difficult": [
+        "ESTJ",
+        "ISFJ",
+        "ESTP"
+      ]
+    },
+    "ENFJ": {
+      "strong": [
+        "ENFP",
+        "INFJ",
+        "INFP"
+      ],
+      "difficult": [
+        "ISTJ",
+        "ISTP",
+        "ESTJ"
+      ]
+    },
+    "ENFP": {
+      "strong": [
+        "ENFJ",
+        "INFJ",
+        "INFP"
+      ],
+      "difficult": [
+        "ISTJ",
+        "ISTP",
+        "ESTJ"
+      ]
+    },
+    "ISTJ": {
+      "strong": [
+        "ESFP",
+        "ESTJ",
+        "ESTP"
+      ],
+      "difficult": [
+        "ENFJ",
+        "ENFP",
+        "INFJ"
+      ]
+    },
+    "ISFJ": {
+      "strong": [
+        "ESFJ",
+        "ESFP",
+        "ESTP"
+      ],
+      "difficult": [
+        "ENTP",
+        "INFP",
+        "ENTJ"
+      ]
+    },
+    "ESTJ": {
+      "strong": [
+        "ESFJ",
+        "ESTP",
+        "ISFP"
+      ],
+      "difficult": [
+        "ENTP",
+        "INFP",
+        "INFJ"
+      ]
+    },
+    "ESFJ": {
+      "strong": [
+        "ESFP",
+        "ESTJ",
+        "ISFJ"
+      ],
+      "difficult": [
+        "INTJ",
+        "INTP",
+        "ENTJ"
+      ]
+    },
+    "ISTP": {
+      "strong": [
+        "ESFJ",
+        "ESTJ",
+        "ESTP"
+      ],
+      "difficult": [
+        "ENFJ",
+        "ENFP",
+        "INFJ"
+      ]
+    },
+    "ISFP": {
+      "strong": [
+        "ESFJ",
+        "ESFP",
+        "ESTJ"
+      ],
+      "difficult": [
+        "ENTJ",
+        "INFJ",
+        "ENTP"
+      ]
+    },
+    "ESTP": {
+      "strong": [
+        "ESFP",
+        "ESTJ",
+        "ISFJ"
+      ],
+      "difficult": [
+        "ENTJ",
+        "INFJ",
+        "INFP"
+      ]
+    },
+    "ESFP": {
+      "strong": [
+        "ESFJ",
+        "ESTP",
+        "ISFJ"
+      ],
+      "difficult": [
+        "INTJ",
+        "INTP",
+        "ENTJ"
+      ]
+    }
+  }
+}

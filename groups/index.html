@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Классификация MBTI — anonch</title>
+    <link rel="stylesheet" href="/src/styles/tokens.css" />
+    <link rel="stylesheet" href="/src/styles/base.css" />
+    <link rel="stylesheet" href="/src/styles/layout.css" />
+    <link rel="stylesheet" href="/src/styles/components.css" />
+    <link rel="stylesheet" href="/src/styles/pages/groups.css" />
+    <script type="module" src="/src/shared/shell.js"></script>
+    <script type="module" src="/src/pages/groups.js"></script>
+  </head>
+  <body data-page="groups">
+    <a class="skip-link" href="#main-content">Перейти к содержимому</a>
+    <div data-shell-header></div>
+
+    <main id="main-content" class="page-main">
+      <section class="section hero">
+        <div class="container section-head">
+          <span class="eyebrow">4 группы</span>
+          <h1>Классификация делает каталог MBTI быстрее понятным даже для нового пользователя.</h1>
+          <p class="lead">
+            Каждая группа получает свою идею, список входящих типов и прямые переходы на страницы конкретных MBTI.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container groups-grid" data-groups-grid></div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-head">
+            <span class="eyebrow">Как читать классификацию</span>
+            <h2>Группы помогают быстро выбрать, куда смотреть дальше после теста.</h2>
+          </div>
+
+          <div class="group-sections" data-groups-guide></div>
+        </div>
+      </section>
+    </main>
+
+    <div data-shell-footer></div>
+  </body>
+</html>

@@ -1,0 +1,67 @@
+.result-hero {
+  align-items: center;
+}
+
+.result-summary {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.quote-card {
+  border-left: 0.3rem solid var(--color-accent);
+}
+
+.result-empty {
+  gap: var(--space-md);
+}
+
+.result-grid {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.result-match-card {
+  gap: var(--space-sm);
+}
+
+.result-match-card .muted,
+.result-challenge-item .muted {
+  max-width: 54ch;
+}
+
+.result-challenge-list {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.result-challenge-item {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 253, 250, 0.72);
+}
+
+.next-grid {
+  display: grid;
+  gap: var(--space-md);
+}
+
+@media (max-width: 37.5rem) {
+  .result-challenge-item {
+    align-items: flex-start;
+  }
+}
+
+@media (min-width: 48rem) {
+  .result-grid {
+    grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 0.8fr);
+  }
+
+  .next-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
