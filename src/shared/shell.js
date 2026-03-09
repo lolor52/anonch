@@ -1,4 +1,5 @@
 import { createAuthManager } from "../features/auth/auth-manager.js";
+import { initAuthModal, openAuthModal } from "../features/auth/auth-modal.js";
 import { isProtectedRoute, redirectToAuth } from "../features/auth/page-guard.js";
 
 const authManager = createAuthManager();
@@ -114,33 +115,21 @@ function renderFooter() {
   host.innerHTML = `
     <footer class="site-footer">
       <div class="container-wide footer-grid">
-        <div class="footer-column">
+        <div class="footer-column footer-column-brand">
           ${renderBrand()}
-          <p class="muted">
-            Спокойный сайт про MBTI: вход, тест, личный результат, каталог типов,
-            совместимость и будущий анонимный чат.
-          </p>
         </div>
 
-        <div class="footer-column">
+        <nav class="footer-column footer-column-nav" aria-label="Разделы сайта">
           <p class="footer-title">Разделы</p>
           <div class="footer-links">
-            <a href="/auth/">Страница входа</a>
+            <a href="/auth/">Вход в профиль</a>
             <a href="/test/">Тест MBTI</a>
             <a href="/result/">Страница результата</a>
             <a href="/types/">Все 16 типов</a>
             <a href="/groups/">4 группы</a>
+            <a href="/chat/">Страница чата</a>
           </div>
-        </div>
-
-        <div class="footer-column">
-          <p class="footer-title">Статус</p>
-          <div class="footer-links">
-            <span>Вход доступен через VK ID и Yandex ID</span>
-            <span>Профиль, ответы теста и результат сохраняются в браузере</span>
-            <a href="/chat/">Скоро: анонимный чат по MBTI</a>
-          </div>
-        </div>
+        </nav>
       </div>
 
       <div class="container-wide footer-bottom">
@@ -288,6 +277,18 @@ function handleDocumentClick(event) {
     return;
   }
 
+  const authLink = event.target.closest("a[href]");
+
+  if (shouldOpenAuthModal(event, authLink)) {
+    event.preventDefault();
+    closeMenu();
+    openAuthModal({
+      redirectTarget: resolveAuthRedirectTarget(authLink),
+      returnFocus: authLink,
+    });
+    return;
+  }
+
   if (event.target.closest(".site-nav a")) {
     closeMenu();
     return;
@@ -326,6 +327,44 @@ function setupInteractions() {
   });
 }
 
+function shouldOpenAuthModal(event, link) {
+  if (!link || event.defaultPrevented) {
+    return false;
+  }
+
+  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+    return false;
+  }
+
+  if (link.target && link.target !== "_self") {
+    return false;
+  }
+
+  const linkUrl = new URL(link.href, window.location.origin);
+  return normalizePath(linkUrl.pathname) === "/auth/";
+}
+
+function resolveAuthRedirectTarget(link) {
+  const linkUrl = new URL(link.href, window.location.origin);
+  const explicitRedirect = linkUrl.searchParams.get("redirect");
+
+  if (explicitRedirect && explicitRedirect.startsWith("/") && !explicitRedirect.startsWith("//")) {
+    return explicitRedirect;
+  }
+
+  if (pageKey === "home" || pageKey === "auth") {
+    return "/test/";
+  }
+
+  return `${normalizePath(window.location.pathname)}${window.location.search}`;
+}
+
+function normalizePath(pathname) {
+  const withoutIndex = pathname.replace(/index\.html$/, "");
+  return withoutIndex.endsWith("/") ? withoutIndex : `${withoutIndex}/`;
+}
+
+initAuthModal();
 renderHeader();
 renderFooter();
 setupYear();

@@ -302,7 +302,7 @@ function buildMissingConfigMessage(config, requiredFields) {
     return "";
   }
 
-  return "Для него ещё не завершена настройка.";
+  return `Не заполнены обязательные поля: ${missingFields.join(", ")}.`;
 }
 
 function getPendingStorageKey(providerKey) {

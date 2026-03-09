@@ -129,6 +129,6 @@ function renderState({ title, body, tone, badge }) {
     <span class="badge ${tone === "error" ? "badge--warm" : "badge--soft"}">${badge}</span>
     <h1 class="card-title">${title}</h1>
     <p class="muted">${body}</p>
-    <a class="btn btn--secondary btn--sm" href="/auth/">Вернуться к входу</a>
+    <a class="btn btn--secondary btn--sm" href="/">Вернуться на сайт</a>
   `;
 }

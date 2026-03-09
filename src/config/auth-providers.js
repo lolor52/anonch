@@ -4,7 +4,7 @@ export const AUTH_PROVIDER_CONFIGS = Object.freeze({
   vk: Object.freeze({
     key: "vk",
     label: "VK ID",
-    mode: "mock",
+    mode: "real",
     appId: "",
     redirectUri: "/auth/callback/?provider=vk",
     authorizeUrl: "https://id.vk.ru/authorize",
@@ -22,16 +22,11 @@ export const AUTH_PROVIDER_CONFIGS = Object.freeze({
     featureFlags: Object.freeze({
       enableRealAuth: true,
     }),
-    mockProfile: Object.freeze({
-      username: "vk_demo_alina",
-      displayName: "Алина из VK",
-      avatar: "",
-    }),
   }),
   yandex: Object.freeze({
     key: "yandex",
     label: "Yandex ID",
-    mode: "mock",
+    mode: "real",
     clientId: "",
     redirectUri: "/auth/callback/?provider=yandex",
     authorizeUrl: "https://oauth.yandex.com/authorize",
@@ -47,11 +42,6 @@ export const AUTH_PROVIDER_CONFIGS = Object.freeze({
     }),
     featureFlags: Object.freeze({
       enableRealAuth: true,
-    }),
-    mockProfile: Object.freeze({
-      username: "yandex_demo_ilya",
-      displayName: "Илья из Yandex",
-      avatar: "",
     }),
   }),
 });

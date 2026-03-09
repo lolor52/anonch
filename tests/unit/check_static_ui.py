@@ -31,7 +31,7 @@ REQUIRED_FILES = {
     "types/template/index.html": ['data-page="types"', "Шаблон типа MBTI"],
     "src/shared/shell.js": ['key: "auth"', 'href: "/auth/"'],
     "src/shared/seo.js": ["updateSeoMetadata", "og:title", "application/ld+json"],
-    "src/styles/pages/auth.css": [".auth-layout", ".auth-summary-grid", ".auth-message", ".auth-helper-page"],
+    "src/styles/pages/auth.css": [".auth-route", ".auth-route-card", ".auth-helper-page"],
     "robots.txt": ["User-agent: *", "GPTBot", "OAI-SearchBot"],
     "llms.txt": ["# АнонЧ", "## Основные страницы"],
     "site.webmanifest": ['"short_name": "АнонЧ"', '"/media/logo.png"'],

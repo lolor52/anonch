@@ -1,61 +1,9 @@
-.auth-hero {
-  align-items: start;
-}
-
-.auth-entry,
-.auth-side {
+.auth-route {
   display: grid;
-  gap: var(--space-md);
 }
 
-.auth-layout {
-  display: grid;
-  gap: var(--space-lg);
-}
-
-.auth-hero-note {
-  min-height: 0;
-}
-
-.auth-summary-grid {
-  display: grid;
-  gap: var(--space-md);
-}
-
-.auth-message {
-  padding: var(--space-sm) var(--space-md);
-  border-radius: var(--radius-md);
-  border: 1px solid transparent;
-}
-
-.auth-message--info {
-  border-color: rgba(22, 117, 111, 0.16);
-  background: rgba(22, 117, 111, 0.08);
-  color: var(--color-brand-strong);
-}
-
-.auth-message--error {
-  border-color: rgba(168, 88, 50, 0.2);
-  background: rgba(229, 132, 90, 0.12);
-  color: #8e4b2b;
-}
-
-.auth-profile-grid,
-.provider-status-list {
-  display: grid;
-  gap: var(--space-sm);
-}
-
-.provider-status {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: var(--space-sm);
-  align-items: start;
-  padding: var(--space-sm);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: rgba(255, 253, 250, 0.72);
+.auth-route-card {
+  justify-items: start;
 }
 
 .auth-helper-page {
@@ -72,19 +20,4 @@
 .auth-helper-card {
   gap: var(--space-md);
   text-align: center;
- }
-
-@media (min-width: 48rem) {
-  .auth-layout {
-    grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
-    align-items: start;
-  }
-
-  .auth-summary-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .auth-profile-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
