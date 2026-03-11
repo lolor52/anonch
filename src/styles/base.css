@@ -24,10 +24,6 @@ body {
   overflow-x: hidden;
 }
 
-body.has-auth-modal {
-  overflow: hidden;
-}
-
 ::selection {
   background: rgba(22, 117, 111, 0.18);
   color: var(--color-text);

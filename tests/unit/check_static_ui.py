@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parents[2]
 REQUIRED_FILES = {
     "index.html": [
         'data-page="home"',
-        "/auth/",
+        "/test/",
         'data-home-groups',
         'src/pages/home.js',
         'src/shared/seo.js',
@@ -15,26 +15,28 @@ REQUIRED_FILES = {
         "Скоро будет реализован анонимный чат",
         "Партнеры",
         "/media/head_logo_fasie.png",
+        "без регистрации",
     ],
-    "auth/index.html": [
-        'data-page="auth"',
-        'data-auth-page',
-        'src/pages/auth.js',
-        "noindex,follow",
-    ],
-    "auth/callback/index.html": ['data-auth-callback-page', 'src/pages/auth-callback.js'],
     "test/index.html": ['data-page="test"', 'data-test-layout', 'src/pages/test.js'],
     "result/index.html": ['data-page="result"', 'data-result-page', 'src/pages/result.js'],
     "types/index.html": ['data-page="types"', 'data-types-grid', 'src/pages/types.js'],
     "groups/index.html": ['data-page="groups"', 'data-groups-grid', 'src/pages/groups.js'],
     "chat/index.html": ['data-page="chat"', "Анонимный чат"],
     "types/template/index.html": ['data-page="types"', "Шаблон типа MBTI"],
-    "src/shared/shell.js": ['key: "auth"', 'href: "/auth/"'],
+    "src/shared/shell.js": ['href: "/test/"', 'href: "/result/"', 'href: "/types/"'],
     "src/shared/seo.js": ["updateSeoMetadata", "og:title", "application/ld+json"],
-    "src/styles/pages/auth.css": [".auth-route", ".auth-route-card", ".auth-helper-page"],
+    "src/styles/pages/home.css": [".home-start-card"],
     "robots.txt": ["User-agent: *", "GPTBot", "OAI-SearchBot"],
     "llms.txt": ["# АнонЧ", "## Основные страницы"],
     "site.webmanifest": ['"short_name": "АнонЧ"', '"/media/logo.png"'],
+}
+
+FORBIDDEN_FILES = {
+    "auth/index.html",
+    "auth/callback/index.html",
+    "src/pages/auth.js",
+    "src/pages/auth-callback.js",
+    "src/styles/pages/auth.css",
 }
 
 
@@ -45,6 +47,10 @@ def assert_contains(path: Path, markers: list[str]) -> list[str]:
 
 def main() -> None:
     errors: list[str] = []
+
+    for relative_path in FORBIDDEN_FILES:
+        if (ROOT / relative_path).exists():
+            errors.append(f"Unexpected file: {relative_path}")
 
     for relative_path, markers in REQUIRED_FILES.items():
         path = ROOT / relative_path

@@ -1,4 +1,3 @@
-import { createAuthManager } from "../features/auth/auth-manager.js";
 import { createMbtiService } from "../features/mbti/mbti-service.js";
 import {
   getAllowedStep,
@@ -9,11 +8,9 @@ import {
 import { loadJson, readSearchParam, renderNotice } from "../shared/mbti-data.js";
 
 const layoutHost = document.querySelector("[data-test-layout]");
-const authManager = createAuthManager();
-const mbtiService = createMbtiService({ authManager });
+const mbtiService = createMbtiService();
 
 const state = {
-  currentUser: null,
   currentResult: null,
   draft: null,
   questions: null,
@@ -31,23 +28,16 @@ if (layoutHost) {
 }
 
 async function initTestPage() {
-  const currentUser = authManager.restoreSession();
-
-  if (!currentUser) {
-    throw new Error("Тест доступен только после входа.");
-  }
-
   const [questions, uiCopy] = await Promise.all([loadJson("questions"), loadJson("ui-copy")]);
-  const existingResult = mbtiService.getResult(currentUser.id);
+  const existingResult = mbtiService.getResult();
   const requestedQuestion = Number.parseInt(readSearchParam("question") ?? "1", 10);
-  const savedDraft = mbtiService.getDraft(currentUser.id, questions);
+  const savedDraft = mbtiService.getDraft(questions);
   const currentStep = getAllowedStep(questions, savedDraft.answers, Number.isNaN(requestedQuestion) ? savedDraft.currentStep : requestedQuestion);
 
-  state.currentUser = currentUser;
   state.currentResult = existingResult;
   state.questions = questions;
   state.uiCopy = uiCopy;
-  state.draft = mbtiService.saveDraft(currentUser.id, questions, {
+  state.draft = mbtiService.saveDraft(questions, {
     ...savedDraft,
     currentStep,
   });
@@ -213,7 +203,7 @@ function bindEvents() {
     button.addEventListener("click", () => {
       const question = state.questions.items[state.draft.currentStep - 1];
 
-      state.draft = mbtiService.saveDraft(state.currentUser.id, state.questions, {
+      state.draft = mbtiService.saveDraft(state.questions, {
         ...state.draft,
         answers: {
           ...sanitizeAnswers(state.questions, state.draft.answers),
@@ -266,7 +256,7 @@ function bindEvents() {
 
   if (saveLaterButton) {
     saveLaterButton.addEventListener("click", () => {
-      state.draft = mbtiService.saveDraft(state.currentUser.id, state.questions, state.draft);
+      state.draft = mbtiService.saveDraft(state.questions, state.draft);
       state.statusMessage = "Прогресс сохранён. Можно закрыть страницу и вернуться позже.";
       state.statusTone = "info";
       state.focusTarget = { type: "save-later" };
@@ -284,9 +274,9 @@ function bindEvents() {
         return;
       }
 
-      mbtiService.startRetake(state.currentUser.id);
+      mbtiService.startRetake();
       state.currentResult = null;
-      state.draft = mbtiService.getDraft(state.currentUser.id, state.questions);
+      state.draft = mbtiService.getDraft(state.questions);
       state.statusMessage = "Прошлый результат очищен. Можно проходить тест заново.";
       state.statusTone = "info";
       state.focusTarget = { type: "heading" };
@@ -296,7 +286,7 @@ function bindEvents() {
 }
 
 function goToStep(step) {
-  state.draft = mbtiService.saveDraft(state.currentUser.id, state.questions, {
+  state.draft = mbtiService.saveDraft(state.questions, {
     ...state.draft,
     currentStep: step,
   });
@@ -317,7 +307,7 @@ function handleNextStep() {
   }
 
   if (state.draft.currentStep === state.questions.items.length) {
-    const result = mbtiService.completeTest(state.currentUser.id, state.questions, state.draft.answers);
+    const result = mbtiService.completeTest(state.questions, state.draft.answers);
     state.currentResult = result;
     window.location.assign("/result/");
     return;

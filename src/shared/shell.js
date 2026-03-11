@@ -1,12 +1,12 @@
-import { createAuthManager } from "../features/auth/auth-manager.js";
-import { initAuthModal, openAuthModal } from "../features/auth/auth-modal.js";
-import { isProtectedRoute, redirectToAuth } from "../features/auth/page-guard.js";
+import { createMbtiService } from "../features/mbti/mbti-service.js";
 
-const authManager = createAuthManager();
+const mbtiService = createMbtiService();
 const BRAND_NAME = "АнонЧ";
 const pageKey = document.body.dataset.page ?? "";
 
-let currentUser = readCurrentUser();
+let currentResult = null;
+
+currentResult = readCurrentResult();
 
 function renderBrand() {
   return `
@@ -25,7 +25,6 @@ function renderBrand() {
 function getNavItems() {
   return [
     { key: "home", label: "Главная", href: "/" },
-    { key: "auth", label: currentUser ? "Аккаунт" : "Вход", href: "/auth/" },
     { key: "test", label: "Тест", href: "/test/" },
     { key: "result", label: "Результат", href: "/result/" },
     { key: "types", label: "Типы", href: "/types/" },
@@ -35,11 +34,41 @@ function getNavItems() {
 }
 
 function getHeaderAction() {
-  if (currentUser) {
-    return { href: "/test/", label: "К тесту" };
+  if (currentResult && pageKey !== "result") {
+    return { href: "/result/", label: "Открыть результат" };
   }
 
-  return pageKey === "auth" ? { href: "/types/", label: "Смотреть типы" } : { href: "/auth/", label: "Войти" };
+  if (pageKey === "result") {
+    return { href: "/types/", label: "Смотреть типы" };
+  }
+
+  if (pageKey === "test") {
+    return { href: "/types/", label: "Смотреть типы" };
+  }
+
+  return { href: "/test/", label: "Пройти тест" };
+}
+
+function renderDesktopStatus() {
+  return `
+    <div class="cluster nav-meta" aria-label="Локальное состояние">
+      <span class="badge badge--soft">без регистрации</span>
+      <span class="badge ${currentResult ? "badge--warm" : "badge--soft"}">
+        ${currentResult ? `сохранён ${currentResult.typeCode}` : "сохраняется в браузере"}
+      </span>
+    </div>
+  `;
+}
+
+function renderMobileStatus() {
+  return `
+    <div class="nav-panel nav-panel--mobile">
+      <span class="badge badge--soft">без регистрации</span>
+      <span class="badge ${currentResult ? "badge--warm" : "badge--soft"}">
+        ${currentResult ? `сохранён ${currentResult.typeCode}` : "сохраняется в браузере"}
+      </span>
+    </div>
+  `;
 }
 
 function renderHeader() {
@@ -63,10 +92,6 @@ function renderHeader() {
     )
     .join("");
   const headerAction = getHeaderAction();
-  const desktopSession = currentUser ? renderUserActions("desktop") : renderGuestActions();
-  const mobileSession = currentUser
-    ? `<div class="nav-panel nav-panel--mobile">${renderUserActions("mobile")}</div>`
-    : `<div class="nav-panel nav-panel--mobile">${renderGuestActions()}</div>`;
 
   host.innerHTML = `
     <header class="site-header">
@@ -91,11 +116,11 @@ function renderHeader() {
 
         <nav class="site-nav" id="site-navigation" aria-label="Основная навигация" data-site-nav>
           ${navLinks}
-          ${mobileSession}
+          ${renderMobileStatus()}
         </nav>
 
         <div class="nav-actions">
-          ${desktopSession}
+          ${renderDesktopStatus()}
           <a class="btn btn--primary btn--sm" href="${headerAction.href}">${headerAction.label}</a>
         </div>
       </div>
@@ -122,7 +147,6 @@ function renderFooter() {
         <nav class="footer-column footer-column-nav" aria-label="Разделы сайта">
           <p class="footer-title">Разделы</p>
           <div class="footer-links">
-            <a href="/auth/">Вход в профиль</a>
             <a href="/test/">Тест MBTI</a>
             <a href="/result/">Страница результата</a>
             <a href="/types/">Все 16 типов</a>
@@ -206,52 +230,18 @@ function setupYear() {
   }
 }
 
-function renderUserActions(mode) {
-  const providerLabel = getAuthProviderLabel(currentUser.authProvider);
-  const logoutClass = mode === "mobile" ? "btn btn--secondary btn--sm nav-logout" : "btn btn--ghost btn--sm";
-
-  return `
-    <a class="nav-session" href="/auth/">
-      <span class="nav-session-mark" aria-hidden="true">${currentUser.displayName.slice(0, 1).toUpperCase()}</span>
-      <span class="nav-session-copy">
-        <strong>${currentUser.displayName}</strong>
-        <span>@${currentUser.username} · ${providerLabel}</span>
-      </span>
-    </a>
-    <button class="${logoutClass}" type="button" data-logout-trigger>Выйти</button>
-  `;
+function refreshShellState() {
+  currentResult = readCurrentResult();
+  renderHeader();
 }
 
-function renderGuestActions() {
-  return `
-    <span class="badge badge--soft">гость</span>
-  `;
-}
-
-function getAuthProviderLabel(providerKey) {
-  if (providerKey === "vk") {
-    return "VK ID";
-  }
-
-  if (providerKey === "yandex") {
-    return "Yandex ID";
-  }
-
-  return "вход";
-}
-
-function readCurrentUser() {
+function readCurrentResult() {
   try {
-    return authManager.restoreSession();
+    return mbtiService.getResult();
   } catch (error) {
-    console.error("[auth] Не удалось прочитать сессию для шапки.", error);
+    console.error("[shell] Не удалось прочитать локальный результат.", error);
     return null;
   }
-}
-
-function refreshHeader() {
-  currentUser = readCurrentUser();
-  renderHeader();
 }
 
 function handleDocumentClick(event) {
@@ -260,32 +250,6 @@ function handleDocumentClick(event) {
 
   if (toggle) {
     toggleMenu();
-    return;
-  }
-
-  const logoutTrigger = event.target.closest("[data-logout-trigger]");
-
-  if (logoutTrigger) {
-    authManager.logout();
-
-    if (isProtectedRoute()) {
-      redirectToAuth("signed-out");
-      return;
-    }
-
-    refreshHeader();
-    return;
-  }
-
-  const authLink = event.target.closest("a[href]");
-
-  if (shouldOpenAuthModal(event, authLink)) {
-    event.preventDefault();
-    closeMenu();
-    openAuthModal({
-      redirectTarget: resolveAuthRedirectTarget(authLink),
-      returnFocus: authLink,
-    });
     return;
   }
 
@@ -322,49 +286,9 @@ function setupInteractions() {
     syncMenuState(false);
   });
 
-  window.addEventListener("auth:changed", () => {
-    refreshHeader();
-  });
+  window.addEventListener("storage", refreshShellState);
 }
 
-function shouldOpenAuthModal(event, link) {
-  if (!link || event.defaultPrevented) {
-    return false;
-  }
-
-  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
-    return false;
-  }
-
-  if (link.target && link.target !== "_self") {
-    return false;
-  }
-
-  const linkUrl = new URL(link.href, window.location.origin);
-  return normalizePath(linkUrl.pathname) === "/auth/";
-}
-
-function resolveAuthRedirectTarget(link) {
-  const linkUrl = new URL(link.href, window.location.origin);
-  const explicitRedirect = linkUrl.searchParams.get("redirect");
-
-  if (explicitRedirect && explicitRedirect.startsWith("/") && !explicitRedirect.startsWith("//")) {
-    return explicitRedirect;
-  }
-
-  if (pageKey === "home" || pageKey === "auth") {
-    return "/test/";
-  }
-
-  return `${normalizePath(window.location.pathname)}${window.location.search}`;
-}
-
-function normalizePath(pathname) {
-  const withoutIndex = pathname.replace(/index\.html$/, "");
-  return withoutIndex.endsWith("/") ? withoutIndex : `${withoutIndex}/`;
-}
-
-initAuthModal();
 renderHeader();
 renderFooter();
 setupYear();

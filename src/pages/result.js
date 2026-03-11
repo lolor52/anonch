@@ -1,4 +1,3 @@
-import { createAuthManager } from "../features/auth/auth-manager.js";
 import { createMbtiService } from "../features/mbti/mbti-service.js";
 import {
   buildFallbackMatchNote,
@@ -13,8 +12,7 @@ import {
 } from "../shared/mbti-data.js";
 
 const pageHost = document.querySelector("[data-result-page]");
-const authManager = createAuthManager();
-const mbtiService = createMbtiService({ authManager });
+const mbtiService = createMbtiService();
 
 if (pageHost) {
   initResultPage().catch((error) => {
@@ -24,21 +22,15 @@ if (pageHost) {
 }
 
 async function initResultPage() {
-  const currentUser = authManager.restoreSession();
-
-  if (!currentUser) {
-    throw new Error("Результат доступен только после входа.");
-  }
-
   const [types, categories, compatibility] = await Promise.all([
     loadJson("types"),
     loadJson("categories"),
     loadJson("compatibility"),
   ]);
-  const storedResult = mbtiService.getResult(currentUser.id);
+  const storedResult = mbtiService.getResult();
 
   if (!storedResult) {
-    renderEmptyResultState(currentUser);
+    renderEmptyResultState();
     return;
   }
 
@@ -62,13 +54,13 @@ async function initResultPage() {
     }))
     .filter((item) => item.type);
 
-  document.title = `${storedResult.typeCode} — личный результат MBTI — АнонЧ`;
+  document.title = `${storedResult.typeCode} — результат MBTI — АнонЧ`;
 
   pageHost.innerHTML = `
     <section class="section hero">
       <div class="container-wide hero-grid result-hero">
         <div class="stack-lg">
-          <span class="eyebrow">Личный результат</span>
+          <span class="eyebrow">Результат MBTI</span>
           <div class="stack">
             <div class="cluster">
               <span class="${getGroupBadgeClass(currentType.group)}" data-result-type>${storedResult.typeCode}</span>
@@ -88,7 +80,7 @@ async function initResultPage() {
         <article class="card card--contrast quote-card">
           <span class="badge badge--warm">Краткий портрет</span>
           <p>${currentType.friendship}</p>
-          <p class="subtle">Профиль сохранён локально и восстановится после перезагрузки, пока вы не сбросите результат.</p>
+          <p class="subtle">Результат сохранён локально и восстановится после перезагрузки, пока вы не сбросите его вручную.</p>
         </article>
       </div>
     </section>
@@ -250,18 +242,18 @@ async function initResultPage() {
     </section>
   `;
 
-  bindResultEvents(currentUser.id);
+  bindResultEvents();
 }
 
-function renderEmptyResultState(currentUser) {
-  document.title = "Личный результат MBTI — АнонЧ";
+function renderEmptyResultState() {
+  document.title = "Результат MBTI — АнонЧ";
 
   pageHost.innerHTML = `
     <section class="section">
       <div class="container-wide">
         <article class="card card--soft result-empty">
           <span class="badge">Результат пока пуст</span>
-          <h1>У ${currentUser.displayName} ещё нет сохранённого результата MBTI.</h1>
+          <h1>Сохранённого результата MBTI пока нет.</h1>
           <p class="lead">
             Начните тест, ответьте на все 22 вопроса и получите отдельную страницу результата с типом, балансом по осям и совместимостью.
           </p>
@@ -275,7 +267,7 @@ function renderEmptyResultState(currentUser) {
   `;
 }
 
-function bindResultEvents(userId) {
+function bindResultEvents() {
   const retakeButton = pageHost.querySelector("[data-retake-result]");
 
   if (!retakeButton) {
@@ -289,7 +281,7 @@ function bindResultEvents(userId) {
       return;
     }
 
-    mbtiService.startRetake(userId);
+    mbtiService.startRetake();
     window.location.assign("/test/?retake=1");
   });
 }

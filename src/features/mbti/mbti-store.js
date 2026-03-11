@@ -1,67 +1,45 @@
 import { removeStoredValue, resolveStorage, readJsonValue, writeJsonValue } from "../../shared/storage.js";
 
 export const MBTI_STORAGE_KEYS = Object.freeze({
-  drafts: "mbti.testDrafts",
-  results: "mbti.results",
+  draft: "mbti.testDraft",
+  result: "mbti.result",
 });
 
 export function createMbtiStore(providedStorage) {
   const storage = resolveStorage(providedStorage);
 
   return {
-    getDraft(userId) {
-      const drafts = readCollection(storage, MBTI_STORAGE_KEYS.drafts);
-      return drafts[userId] ?? null;
+    getDraft() {
+      return readStoredObject(storage, MBTI_STORAGE_KEYS.draft);
     },
 
-    saveDraft(userId, draft) {
-      const drafts = readCollection(storage, MBTI_STORAGE_KEYS.drafts);
-      drafts[userId] = draft;
-      writeJsonValue(storage, MBTI_STORAGE_KEYS.drafts, drafts);
+    saveDraft(draft) {
+      writeJsonValue(storage, MBTI_STORAGE_KEYS.draft, draft);
     },
 
-    clearDraft(userId) {
-      const drafts = readCollection(storage, MBTI_STORAGE_KEYS.drafts);
-      delete drafts[userId];
-
-      if (Object.keys(drafts).length === 0) {
-        removeStoredValue(storage, MBTI_STORAGE_KEYS.drafts);
-        return;
-      }
-
-      writeJsonValue(storage, MBTI_STORAGE_KEYS.drafts, drafts);
+    clearDraft() {
+      removeStoredValue(storage, MBTI_STORAGE_KEYS.draft);
     },
 
-    getResult(userId) {
-      const results = readCollection(storage, MBTI_STORAGE_KEYS.results);
-      return results[userId] ?? null;
+    getResult() {
+      return readStoredObject(storage, MBTI_STORAGE_KEYS.result);
     },
 
-    saveResult(userId, result) {
-      const results = readCollection(storage, MBTI_STORAGE_KEYS.results);
-      results[userId] = result;
-      writeJsonValue(storage, MBTI_STORAGE_KEYS.results, results);
+    saveResult(result) {
+      writeJsonValue(storage, MBTI_STORAGE_KEYS.result, result);
     },
 
-    clearResult(userId) {
-      const results = readCollection(storage, MBTI_STORAGE_KEYS.results);
-      delete results[userId];
-
-      if (Object.keys(results).length === 0) {
-        removeStoredValue(storage, MBTI_STORAGE_KEYS.results);
-        return;
-      }
-
-      writeJsonValue(storage, MBTI_STORAGE_KEYS.results, results);
+    clearResult() {
+      removeStoredValue(storage, MBTI_STORAGE_KEYS.result);
     },
   };
 }
 
-function readCollection(storage, key) {
+function readStoredObject(storage, key) {
   const value = readJsonValue(storage, key);
 
   if (value === null) {
-    return {};
+    return null;
   }
 
   if (!value || typeof value !== "object" || Array.isArray(value)) {

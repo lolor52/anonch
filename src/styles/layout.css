@@ -306,58 +306,8 @@
   border-top: 1px solid var(--color-border);
 }
 
-.nav-session {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  min-width: 0;
-  padding: 0.45rem 0.7rem;
-  border: 1px solid rgba(22, 117, 111, 0.12);
-  border-radius: var(--radius-pill);
-  background: rgba(255, 253, 250, 0.84);
-  transition:
-    border-color var(--transition-fast),
-    background var(--transition-fast);
-}
-
-.nav-session:hover,
-.nav-session:focus-visible {
-  border-color: rgba(22, 117, 111, 0.24);
-  background: rgba(22, 117, 111, 0.08);
-}
-
-.nav-session-mark {
-  width: 2rem;
-  height: 2rem;
-  flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  border-radius: 0.75rem;
-  background: rgba(22, 117, 111, 0.14);
-  color: var(--color-brand-strong);
-  font-size: var(--text-sm);
-  font-weight: 900;
-}
-
-.nav-session-copy {
-  display: grid;
-  min-width: 0;
-}
-
-.nav-session-copy strong,
-.nav-session-copy span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.nav-session-copy span {
-  color: var(--color-text-soft);
-  font-size: var(--text-xs);
-}
-
-.nav-logout {
-  width: 100%;
+.nav-meta {
+  justify-content: flex-end;
 }
 
 .site-footer {

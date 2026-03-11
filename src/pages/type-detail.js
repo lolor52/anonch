@@ -9,10 +9,10 @@ import {
   loadJson,
   renderNotice,
 } from "../shared/mbti-data.js";
-import { createAuthManager } from "../features/auth/auth-manager.js";
+import { createMbtiService } from "../features/mbti/mbti-service.js";
 
 const pageHost = document.querySelector("[data-type-detail-page]");
-const authManager = createAuthManager();
+const mbtiService = createMbtiService();
 
 if (pageHost) {
   initTypeDetailPage().catch((error) => {
@@ -27,7 +27,7 @@ async function initTypeDetailPage() {
     loadJson("categories"),
     loadJson("compatibility"),
   ]);
-  const currentUser = safeGetCurrentUser();
+  const currentResult = safeGetCurrentResult();
 
   const typeCode = document.body.dataset.typeCode;
   const currentType = typeCode ? getTypeByCode(types, typeCode.toUpperCase()) : null;
@@ -60,7 +60,7 @@ async function initTypeDetailPage() {
       };
     })
     .sort((left, right) => right.score - left.score || left.type.code.localeCompare(right.type.code));
-  const currentUserType = currentUser?.mbtiResult?.code ?? null;
+  const savedTypeCode = currentResult?.typeCode ?? null;
 
   document.title = `${currentType.code} — ${currentType.fullName} | MBTI — АнонЧ`;
 
@@ -72,14 +72,14 @@ async function initTypeDetailPage() {
             <span class="${getGroupBadgeClass(currentType.group)}">${currentType.code}</span>
             <span class="badge badge--soft">${currentGroup?.title ?? ""}</span>
             <span class="badge badge--soft">${currentGroup?.label ?? ""}</span>
-            ${currentUserType === currentType.code ? '<span class="badge badge--warm">ваш сохранённый тип</span>' : ""}
+            ${savedTypeCode === currentType.code ? '<span class="badge badge--warm">ваш сохранённый тип</span>' : ""}
           </div>
           <div class="stack">
             <h1>${currentType.code} — ${currentType.fullName}</h1>
             <p class="lead">${currentType.shortDescription}</p>
           </div>
           <div class="cluster">
-            <a class="btn btn--primary" href="/result/">Открыть личный результат</a>
+            <a class="btn btn--primary" href="/result/">Открыть результат</a>
             <a class="btn btn--secondary" href="/types/">Вернуться в каталог</a>
           </div>
         </div>
@@ -220,7 +220,7 @@ function renderTemplateState() {
           </div>
           <div class="cluster">
             <a class="btn btn--primary" href="/types/">Открыть каталог</a>
-            <a class="btn btn--secondary" href="/result/">Открыть личный результат</a>
+            <a class="btn btn--secondary" href="/result/">Открыть результат</a>
           </div>
         </div>
 
@@ -268,11 +268,11 @@ function renderMatches(currentType, matchTypes, compatibility) {
     .join("");
 }
 
-function safeGetCurrentUser() {
+function safeGetCurrentResult() {
   try {
-    return authManager.restoreSession();
+    return mbtiService.getResult();
   } catch (error) {
-    console.error("[type-detail] Не удалось прочитать текущего пользователя.", error);
+    console.error("[type-detail] Не удалось прочитать сохранённый результат.", error);
     return null;
   }
 }

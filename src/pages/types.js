@@ -6,13 +6,13 @@ import {
   readSearchParam,
   renderNotice,
 } from "../shared/mbti-data.js";
-import { createAuthManager } from "../features/auth/auth-manager.js";
+import { createMbtiService } from "../features/mbti/mbti-service.js";
 
 const tabsHost = document.querySelector("[data-types-tabs]");
 const gridHost = document.querySelector("[data-types-grid]");
 const searchInput = document.querySelector("[data-types-search]");
 const summaryHost = document.querySelector("[data-types-summary]");
-const authManager = createAuthManager();
+const mbtiService = createMbtiService();
 
 if (tabsHost && gridHost && searchInput && summaryHost) {
   initTypesPage().catch((error) => {
@@ -23,7 +23,7 @@ if (tabsHost && gridHost && searchInput && summaryHost) {
 
 async function initTypesPage() {
   const [types, categories] = await Promise.all([loadJson("types"), loadJson("categories")]);
-  const currentUser = safeGetCurrentUser();
+  const currentResult = safeGetCurrentResult();
   const state = {
     query: (readSearchParam("q") ?? "").trim().toLowerCase(),
     group: readSearchParam("group") ?? "all",
@@ -39,7 +39,7 @@ async function initTypesPage() {
   searchInput.addEventListener("input", () => {
     state.query = searchInput.value.trim().toLowerCase();
     syncUrl(state);
-    renderGrid(types, categories, state, currentUser);
+    renderGrid(types, categories, state, currentResult);
   });
 
   tabsHost.addEventListener("click", (event) => {
@@ -52,7 +52,7 @@ async function initTypesPage() {
     state.group = button.dataset.typesGroup ?? "all";
     renderTabs(groups, state.group);
     syncUrl(state);
-    renderGrid(types, categories, state, currentUser);
+    renderGrid(types, categories, state, currentResult);
   });
 
   tabsHost.addEventListener("keydown", (event) => {
@@ -90,7 +90,7 @@ async function initTypesPage() {
   }
 
   renderTabs(groups, state.group);
-  renderGrid(types, categories, state, currentUser);
+  renderGrid(types, categories, state, currentResult);
 }
 
 function renderTabs(groups, activeGroup) {
@@ -110,7 +110,7 @@ function renderTabs(groups, activeGroup) {
     .join("");
 }
 
-function renderGrid(types, categories, state, currentUser) {
+function renderGrid(types, categories, state, currentResult) {
   const itemsByCode = new Map(types.items.map((type) => [type.code, type]));
   const orderedTypes = (types.order ?? []).map((code) => itemsByCode.get(code)).filter(Boolean);
   const source = orderedTypes.length > 0 ? orderedTypes : types.items;
@@ -143,7 +143,7 @@ function renderGrid(types, categories, state, currentUser) {
   gridHost.innerHTML = filteredTypes
     .map((type) => {
       const group = getGroupByCode(categories, type.group);
-      const isCurrentType = currentUser?.mbtiResult?.code === type.code;
+      const isCurrentType = currentResult?.typeCode === type.code;
 
       return `
         <article class="card">
@@ -182,11 +182,11 @@ function syncUrl(state) {
   history.replaceState({}, document.title, url.pathname + url.search);
 }
 
-function safeGetCurrentUser() {
+function safeGetCurrentResult() {
   try {
-    return authManager.restoreSession();
+    return mbtiService.getResult();
   } catch (error) {
-    console.error("[types] Не удалось прочитать текущего пользователя.", error);
+    console.error("[types] Не удалось прочитать сохранённый результат.", error);
     return null;
   }
 }

@@ -20,14 +20,33 @@ FORBIDDEN_FILES = [
     ROOT / "tools" / "visual-check.mjs",
     ROOT / "src" / "pages" / "yandex-token.js",
     ROOT / "auth" / "yandex" / "token" / "index.html",
+    ROOT / "auth" / "index.html",
+    ROOT / "auth" / "callback" / "index.html",
+    ROOT / "src" / "config" / "auth-providers.js",
+    ROOT / "src" / "pages" / "auth.js",
+    ROOT / "src" / "pages" / "auth-callback.js",
+    ROOT / "src" / "styles" / "pages" / "auth.css",
+    ROOT / "src" / "features" / "auth" / "auth-manager.js",
+    ROOT / "src" / "features" / "auth" / "auth-modal.js",
+    ROOT / "src" / "features" / "auth" / "auth-store.js",
+    ROOT / "src" / "features" / "auth" / "page-guard.js",
+    ROOT / "src" / "features" / "auth" / "profile-utils.js",
+    ROOT / "src" / "features" / "auth" / "protected-page.js",
+    ROOT / "src" / "features" / "auth" / "providers" / "provider-utils.js",
+    ROOT / "src" / "features" / "auth" / "providers" / "vk-provider.js",
+    ROOT / "src" / "features" / "auth" / "providers" / "yandex-provider.js",
 ]
 
-RUNTIME_FILES = [
-    ROOT / "src" / "config" / "auth-providers.js",
-    ROOT / "src" / "features" / "auth" / "providers" / "provider-utils.js",
-    ROOT / "src" / "features" / "auth" / "providers" / "yandex-provider.js",
-    ROOT / "src" / "pages" / "auth-callback.js",
-    ROOT / "auth" / "callback" / "index.html",
+SCAN_FILES = [
+    ROOT / "README.md",
+    ROOT / "guide" / "project-rules.md",
+    ROOT / "llms.txt",
+    ROOT / "index.html",
+    ROOT / "src" / "shared" / "shell.js",
+    ROOT / "src" / "pages" / "test.js",
+    ROOT / "src" / "pages" / "result.js",
+    ROOT / "src" / "pages" / "types.js",
+    ROOT / "src" / "pages" / "type-detail.js",
 ]
 
 FORBIDDEN_MARKERS = [
@@ -43,6 +62,14 @@ FORBIDDEN_MARKERS = [
     "tokenSdkUrl",
     "sdkUrl",
     "/auth/yandex/token/",
+    "/auth/",
+    "createAuthManager",
+    "features/auth",
+    "auth-modal",
+    "auth-callback",
+    "auth-providers.js",
+    "VK ID",
+    "Yandex ID",
 ]
 
 DOC_MARKERS = {
@@ -71,7 +98,7 @@ def main() -> None:
         if path.exists():
             errors.append(f"Лишний файл для Node.js-стека: {path.relative_to(ROOT)}")
 
-    for path in RUNTIME_FILES:
+    for path in SCAN_FILES:
         content = path.read_text(encoding="utf-8")
         for marker in FORBIDDEN_MARKERS:
             if marker in content:

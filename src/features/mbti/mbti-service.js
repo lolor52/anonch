@@ -5,16 +5,11 @@ const DEFAULT_LOGGER = console;
 
 export function createMbtiService(options = {}) {
   const store = createMbtiStore(options.storage);
-  const authManager = options.authManager;
   const logger = options.logger ?? DEFAULT_LOGGER;
   const now = options.now ?? (() => new Date().toISOString());
 
-  if (!authManager) {
-    throw new Error("MbtiService требует authManager.");
-  }
-
-  function getDraft(userId, questions) {
-    const storedDraft = store.getDraft(userId);
+  function getDraft(questions) {
+    const storedDraft = store.getDraft();
 
     if (!storedDraft) {
       return createDraft(questions, createEmptyAnswers(), 1, now());
@@ -26,21 +21,21 @@ export function createMbtiService(options = {}) {
     return createDraft(questions, answers, currentStep, storedDraft.updatedAt ?? now());
   }
 
-  function saveDraft(userId, questions, draft) {
+  function saveDraft(questions, draft) {
     const answers = sanitizeAnswers(questions, draft.answers);
     const currentStep = getAllowedStep(questions, answers, draft.currentStep ?? 1);
     const normalizedDraft = createDraft(questions, answers, currentStep, now());
 
-    store.saveDraft(userId, normalizedDraft);
-    logger.info(`[mbti] Сохранён черновик теста для ${userId}.`);
+    store.saveDraft(normalizedDraft);
+    logger.info("[mbti] Сохранён локальный черновик теста.");
     return normalizedDraft;
   }
 
-  function getResult(userId) {
-    return store.getResult(userId);
+  function getResult() {
+    return store.getResult();
   }
 
-  function completeTest(userId, questions, answers) {
+  function completeTest(questions, answers) {
     const result = calculateMbtiResult(questions, answers);
 
     if (!result.isComplete) {
@@ -52,38 +47,26 @@ export function createMbtiService(options = {}) {
       completedAt: now(),
     };
 
-    store.saveResult(userId, completedResult);
-    store.clearDraft(userId);
-    authManager.updateUserProfile(userId, {
-      mbtiResult: {
-        code: completedResult.typeCode,
-        completedAt: completedResult.completedAt,
-        confidenceByAxis: Object.fromEntries(
-          Object.entries(completedResult.axisResults).map(([axisKey, axisResult]) => [axisKey, axisResult.confidencePercent])
-        ),
-      },
-    });
-    logger.info(`[mbti] Тест завершён для ${userId}: ${completedResult.typeCode}.`);
+    store.saveResult(completedResult);
+    store.clearDraft();
+    logger.info(`[mbti] Тест завершён локально: ${completedResult.typeCode}.`);
 
     return completedResult;
   }
 
-  function resetProgress(userId) {
-    store.clearDraft(userId);
-    logger.info(`[mbti] Черновик теста очищен для ${userId}.`);
+  function resetProgress() {
+    store.clearDraft();
+    logger.info("[mbti] Локальный черновик теста очищен.");
   }
 
-  function resetResult(userId) {
-    store.clearResult(userId);
-    authManager.updateUserProfile(userId, {
-      mbtiResult: null,
-    });
-    logger.info(`[mbti] Результат теста очищен для ${userId}.`);
+  function resetResult() {
+    store.clearResult();
+    logger.info("[mbti] Локальный результат теста очищен.");
   }
 
-  function startRetake(userId) {
-    resetProgress(userId);
-    resetResult(userId);
+  function startRetake() {
+    resetProgress();
+    resetResult();
   }
 
   return {
