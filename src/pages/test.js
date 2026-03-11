@@ -104,8 +104,8 @@ function renderQuestionState() {
           >
             <div class="progress-bar" style="width: ${progressByAnswers}%"></div>
           </div>
-          <p class="muted">${answeredCount} из ${state.questions.items.length} ответов уже сохранены локально.</p>
-          <p class="subtle">Последнее сохранение: ${formatDate(state.draft.updatedAt)}</p>
+          <p class="muted">${answeredCount} из ${state.questions.items.length} ответов уже отмечены.</p>
+          <p class="subtle">Последнее обновление: ${formatDate(state.draft.updatedAt)}</p>
         </div>
       </article>
 
@@ -129,7 +129,7 @@ function renderQuestionState() {
         <div class="stack">
           <p class="subtle">Вопрос</p>
           <h2 id="test-question-title" tabindex="-1" data-question-title>${question.text}</h2>
-          <p class="muted">Каждый ответ добавляет веса к одной или нескольким дихотомиям, а черновик сохраняется автоматически.</p>
+          <p class="muted">Выбирайте вариант, который ближе вам сейчас. Здесь нет правильных и неправильных ответов.</p>
         </div>
 
         <div class="answer-list" role="radiogroup" aria-labelledby="test-question-title" data-answer-list>
@@ -157,7 +157,7 @@ function renderQuestionState() {
         <div class="selected-answer-note" id="test-selected-answer-note" role="status" aria-live="polite">
           ${
             selectedOption
-              ? `Выбран ответ: <strong>${selectedOption.label}</strong>. Его веса уже учтены в локальном черновике.`
+              ? `Выбран ответ: <strong>${selectedOption.label}</strong>. Можно переходить дальше.`
               : "Выберите один вариант, чтобы перейти дальше."
           }
         </div>
@@ -210,7 +210,7 @@ function bindEvents() {
           [question.id]: button.dataset.answerId,
         },
       });
-      state.statusMessage = "Ответ сохранён локально.";
+      state.statusMessage = "Ответ принят.";
       state.statusTone = "info";
       state.focusTarget = { type: "answer", value: button.dataset.answerId };
       render();
@@ -257,7 +257,7 @@ function bindEvents() {
   if (saveLaterButton) {
     saveLaterButton.addEventListener("click", () => {
       state.draft = mbtiService.saveDraft(state.questions, state.draft);
-      state.statusMessage = "Прогресс сохранён. Можно закрыть страницу и вернуться позже.";
+      state.statusMessage = "Можно закрыть страницу и вернуться позже.";
       state.statusTone = "info";
       state.focusTarget = { type: "save-later" };
       render();

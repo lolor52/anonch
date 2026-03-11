@@ -174,7 +174,7 @@ async function initTypeDetailPage() {
         <div class="section-head section-head--inline">
           <div class="stack">
             <span class="eyebrow">Совместимость 1–7</span>
-            <h2>Полная шкала совместимости с остальными типами без ручного хардкода.</h2>
+            <h2>Полная шкала совместимости с остальными типами.</h2>
           </div>
           <p class="muted">7 означает самый лёгкий контакт, а диапазон 1–3 обычно требует больше такта и согласования.</p>
         </div>
@@ -216,7 +216,7 @@ function renderTemplateState() {
           </div>
           <div class="stack">
             <h1>Универсальный шаблон страницы типа</h1>
-            <p class="lead">Если код типа не передан, страница остаётся общим каркасом и ждёт данные из JSON.</p>
+            <p class="lead">Если код типа не передан, страница остаётся общим примером и показывает базовый каркас.</p>
           </div>
           <div class="cluster">
             <a class="btn btn--primary" href="/types/">Открыть каталог</a>
@@ -227,7 +227,7 @@ function renderTemplateState() {
         <article class="card card--soft">
           <span class="badge badge--warm">Назначение</span>
           <h2 class="card-title">Один шаблон покрывает все 16 страниц.</h2>
-          <p class="muted">Данные о типе, группе и совместимости подставляются автоматически без ручной верстки каждой страницы.</p>
+          <p class="muted">Здесь собирается полная страница типа: описание, группа и совместимость.</p>
         </article>
       </div>
     </section>

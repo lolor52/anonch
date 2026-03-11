@@ -15,7 +15,7 @@ REQUIRED_FILES = {
         "Скоро будет реализован анонимный чат",
         "Партнеры",
         "/media/head_logo_fasie.png",
-        "без регистрации",
+        "Быстрый старт",
     ],
     "test/index.html": ['data-page="test"', 'data-test-layout', 'src/pages/test.js'],
     "result/index.html": ['data-page="result"', 'data-result-page', 'src/pages/result.js'],

@@ -80,7 +80,7 @@ async function initResultPage() {
         <article class="card card--contrast quote-card">
           <span class="badge badge--warm">Краткий портрет</span>
           <p>${currentType.friendship}</p>
-          <p class="subtle">Результат сохранён локально и восстановится после перезагрузки, пока вы не сбросите его вручную.</p>
+          <p class="subtle">К этому результату можно вернуться позже, пока вы сами не решите пройти тест заново.</p>
         </article>
       </div>
     </section>
@@ -224,7 +224,7 @@ async function initResultPage() {
         <div class="next-grid">
           <article class="card">
             <h3 class="card-title">Открыть свой тип подробно</h3>
-            <p class="muted">Подробная страница типа уже готова и собирается из JSON-данных.</p>
+            <p class="muted">Подробная страница типа уже готова и помогает увидеть картину глубже.</p>
             <a class="link-inline" href="${getTypePath(currentType.code)}">Перейти к ${currentType.code}</a>
           </article>
           <article class="card">

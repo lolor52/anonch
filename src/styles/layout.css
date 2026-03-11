@@ -298,18 +298,6 @@
   gap: var(--space-xs);
 }
 
-.nav-panel {
-  display: grid;
-  gap: var(--space-xs);
-  margin-top: var(--space-2xs);
-  padding-top: var(--space-xs);
-  border-top: 1px solid var(--color-border);
-}
-
-.nav-meta {
-  justify-content: flex-end;
-}
-
 .site-footer {
   position: relative;
   overflow: hidden;
@@ -588,11 +576,6 @@
   .nav-actions {
     display: flex;
   }
-
-  .nav-panel--mobile {
-    display: none;
-  }
-
   .section-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

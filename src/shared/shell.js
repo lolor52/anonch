@@ -49,28 +49,6 @@ function getHeaderAction() {
   return { href: "/test/", label: "Пройти тест" };
 }
 
-function renderDesktopStatus() {
-  return `
-    <div class="cluster nav-meta" aria-label="Локальное состояние">
-      <span class="badge badge--soft">без регистрации</span>
-      <span class="badge ${currentResult ? "badge--warm" : "badge--soft"}">
-        ${currentResult ? `сохранён ${currentResult.typeCode}` : "сохраняется в браузере"}
-      </span>
-    </div>
-  `;
-}
-
-function renderMobileStatus() {
-  return `
-    <div class="nav-panel nav-panel--mobile">
-      <span class="badge badge--soft">без регистрации</span>
-      <span class="badge ${currentResult ? "badge--warm" : "badge--soft"}">
-        ${currentResult ? `сохранён ${currentResult.typeCode}` : "сохраняется в браузере"}
-      </span>
-    </div>
-  `;
-}
-
 function renderHeader() {
   const host = document.querySelector("[data-shell-header]");
 
@@ -116,11 +94,9 @@ function renderHeader() {
 
         <nav class="site-nav" id="site-navigation" aria-label="Основная навигация" data-site-nav>
           ${navLinks}
-          ${renderMobileStatus()}
         </nav>
 
         <div class="nav-actions">
-          ${renderDesktopStatus()}
           <a class="btn btn--primary btn--sm" href="${headerAction.href}">${headerAction.label}</a>
         </div>
       </div>
