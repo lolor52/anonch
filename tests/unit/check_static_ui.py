@@ -26,6 +26,7 @@ REQUIRED_FILES = {
     "src/shared/shell.js": ['href: "/test/"', 'href: "/result/"', 'href: "/types/"'],
     "src/shared/seo.js": ["updateSeoMetadata", "og:title", "application/ld+json"],
     "src/styles/pages/home.css": [".home-start-card"],
+    "src/styles/pages/test.css": [".test-main", "body[data-page=\"test\"] .hero h1", "grid-template-columns: repeat(2, minmax(0, 1fr))"],
     "robots.txt": ["User-agent: *", "GPTBot", "OAI-SearchBot"],
     "llms.txt": ["# АнонЧ", "## Основные страницы"],
     "site.webmanifest": ['"short_name": "АнонЧ"', '"/media/logo.png"'],

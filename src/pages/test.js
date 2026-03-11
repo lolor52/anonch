@@ -89,35 +89,7 @@ function renderQuestionState() {
     : "";
 
   layoutHost.innerHTML = `
-    <aside class="test-sidebar">
-      <article class="card card--soft">
-        <div class="stack">
-          <span class="badge">Шаг ${state.draft.currentStep} из ${state.questions.items.length}</span>
-          <h2 class="card-title">Прогресс прохождения</h2>
-          <div
-            class="progress"
-            role="progressbar"
-            aria-label="Прогресс по ответам"
-            aria-valuemin="0"
-            aria-valuemax="100"
-            aria-valuenow="${progressByAnswers}"
-          >
-            <div class="progress-bar" style="width: ${progressByAnswers}%"></div>
-          </div>
-          <p class="muted">${answeredCount} из ${state.questions.items.length} ответов уже отмечены.</p>
-          <p class="subtle">Последнее обновление: ${formatDate(state.draft.updatedAt)}</p>
-        </div>
-      </article>
-
-      <article class="card">
-        <h3 class="card-title">${state.uiCopy.testPreview.sidebarTitle}</h3>
-        <ul class="card-list">
-          ${state.uiCopy.testPreview.sidebarTips.map((tip) => `<li>${tip}</li>`).join("")}
-        </ul>
-      </article>
-    </aside>
-
-    <div class="stack-lg">
+    <div class="stack-lg test-main">
       <article class="card question-card" data-question-card>
         ${statusMarkup}
         <div class="cluster">
@@ -129,7 +101,7 @@ function renderQuestionState() {
         <div class="stack">
           <p class="subtle">Вопрос</p>
           <h2 id="test-question-title" tabindex="-1" data-question-title>${question.text}</h2>
-          <p class="muted">Выбирайте вариант, который ближе вам сейчас. Здесь нет правильных и неправильных ответов.</p>
+          <p class="muted">Выберите вариант, который ближе вам сейчас.</p>
         </div>
 
         <div class="answer-list" role="radiogroup" aria-labelledby="test-question-title" data-answer-list>
@@ -157,8 +129,8 @@ function renderQuestionState() {
         <div class="selected-answer-note" id="test-selected-answer-note" role="status" aria-live="polite">
           ${
             selectedOption
-              ? `Выбран ответ: <strong>${selectedOption.label}</strong>. Можно переходить дальше.`
-              : "Выберите один вариант, чтобы перейти дальше."
+              ? `Ответ выбран: <strong>${selectedOption.label}</strong>. Можно дальше.`
+              : "Выберите вариант, чтобы продолжить."
           }
         </div>
 
@@ -166,17 +138,14 @@ function renderQuestionState() {
           <button class="btn btn--ghost" type="button" data-nav-action="back" ${state.draft.currentStep === 1 ? "disabled" : ""}>
             Назад
           </button>
-          <div class="cluster">
-            <button class="btn btn--secondary" type="button" data-save-later>Сохранить позже</button>
-            <button
-              class="btn btn--primary"
-              type="button"
-              data-nav-action="next"
-              ${isQuestionAnswered(question, state.draft.answers) ? "" : "disabled"}
-            >
-              ${state.draft.currentStep === state.questions.items.length ? "Завершить тест" : "Следующий вопрос"}
-            </button>
-          </div>
+          <button
+            class="btn btn--primary"
+            type="button"
+            data-nav-action="next"
+            ${isQuestionAnswered(question, state.draft.answers) ? "" : "disabled"}
+          >
+            ${state.draft.currentStep === state.questions.items.length ? "Завершить тест" : "Следующий вопрос"}
+          </button>
         </div>
       </article>
 
@@ -191,8 +160,37 @@ function renderQuestionState() {
             `
           )
           .join("")}
+        </div>
       </div>
-    </div>
+
+    <aside class="test-sidebar">
+      <article class="card card--soft">
+        <div class="stack">
+          <span class="badge">Шаг ${state.draft.currentStep} из ${state.questions.items.length}</span>
+          <h2 class="card-title">Прогресс прохождения</h2>
+          <div
+            class="progress"
+            role="progressbar"
+            aria-label="Прогресс по ответам"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="${progressByAnswers}"
+          >
+            <div class="progress-bar" style="width: ${progressByAnswers}%"></div>
+          </div>
+          <p class="muted">${answeredCount} из ${state.questions.items.length} ответов уже отмечены.</p>
+          <p class="subtle">Последнее обновление: ${formatDate(state.draft.updatedAt)}</p>
+          <button class="btn btn--secondary btn--sm" type="button" data-save-later>Сохранить позже</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3 class="card-title">${state.uiCopy.testPreview.sidebarTitle}</h3>
+        <ul class="card-list">
+          ${state.uiCopy.testPreview.sidebarTips.map((tip) => `<li>${tip}</li>`).join("")}
+        </ul>
+      </article>
+    </aside>
   `;
 
   syncUrl();
